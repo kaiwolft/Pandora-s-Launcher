@@ -1,0 +1,1385 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Pandora's Tower — Dionixu's Launcher</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@font-face{font-family:"PT Cinzel";src:url(fonts/Cinzel.ttf) format("truetype");font-weight:400 900}
+@font-face{font-family:"PT Cormorant";src:url(fonts/CormorantGaramond.ttf) format("truetype");font-weight:300 700}
+@font-face{font-family:"PT Inter";src:url(fonts/Inter-ExtraBold.otf) format("opentype");font-weight:800}
+@font-face{font-family:"PT Cormorant";src:url(fonts/CormorantGaramond-Italic.ttf) format("truetype");font-weight:300 700;font-style:italic}
+
+/* ───── Tema NOCHE (por defecto) ───── */
+:root{
+  --bg:#090c11; --ink:#efe7d7; --ink-2:#c3baa9; --mute:#8a8f96;
+  --line:rgba(239,231,215,.34); --line-soft:rgba(239,231,215,.14);
+  --band:rgba(9,12,17,.70); --band-2:rgba(18,22,30,.86); --panel:rgba(11,14,20,.88);
+  --bar1:#6e250d; --bar2:#c25a1c; --bar3:#e9a14a; --amber:#e9a14a; --glow:rgba(233,161,74,.5);
+  --shade:linear-gradient(90deg,rgba(9,12,17,0) 36%,rgba(9,12,17,.58) 55%,rgba(9,12,17,.92) 71%,#090c11 100%);
+  --shade-v:linear-gradient(180deg,rgba(9,12,17,.55) 0,rgba(9,12,17,0) 22%,rgba(9,12,17,0) 70%,rgba(9,12,17,.9) 100%);
+  --art-filter:saturate(.72) brightness(.78) contrast(1.06);
+  --art-opacity:1;
+  --petal:236,231,222; --ember:233,161,74;
+  --display:"PT Cinzel","Cinzel",Georgia,serif;
+  --body:"PT Cormorant","Cormorant Garamond",Garamond,Georgia,serif;
+}
+/* ───── Tema ALBA (claro, más cercano a Dissidia 012) ───── */
+:root[data-theme="alba"]{
+  --bg:#e7e4ee; --ink:#26233a; --ink-2:#4a4663; --mute:#7c7893;
+  --line:rgba(38,35,58,.40); --line-soft:rgba(38,35,58,.16);
+  --band:rgba(246,244,250,.74); --band-2:rgba(230,226,240,.92); --panel:rgba(244,242,249,.92);
+  --bar1:#3a2d78; --bar2:#5d4bb0; --bar3:#9e8fe0; --amber:#5d4bb0; --glow:rgba(93,75,176,.38);
+  --shade:linear-gradient(90deg,rgba(231,228,238,.05) 26%,rgba(231,228,238,.62) 50%,rgba(231,228,238,.93) 68%,#e7e4ee 100%);
+  --shade-v:linear-gradient(180deg,rgba(231,228,238,.4) 0,rgba(231,228,238,0) 22%,rgba(231,228,238,0) 72%,rgba(231,228,238,.85) 100%);
+  --art-filter:grayscale(.55) brightness(1.18) contrast(.92) sepia(.12) hue-rotate(200deg);
+  --art-opacity:.62;
+  --petal:120,108,180; --ember:93,75,176;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;user-select:none;-webkit-user-select:none}
+body{display:flex;align-items:center;justify-content:center}
+#stage{font-variant-numeric:lining-nums;width:1280px;height:720px;position:relative;overflow:hidden;flex:none;transform-origin:center center;
+  background:var(--bg);font-family:var(--body);color:var(--ink);transition:background .6s}
+button:focus,button:focus-visible{outline:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.abs{position:absolute}
+#dragbar{position:fixed;left:0;top:0;right:150px;height:40px;z-index:60;-webkit-app-region:drag}
+
+/* ───── Fondo ───── */
+#art{position:absolute;left:-190px;top:-36px;width:1420px;height:800px;background:url(assets/art.jpg) center/cover;
+  filter:var(--art-filter);opacity:var(--art-opacity);transform-origin:32% 50%;
+  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 50%,rgba(0,0,0,.35) 74%,rgba(0,0,0,.18) 100%);
+  transition:filter .6s,opacity .6s}
+.anim #art{animation:kenburns 38s ease-in-out infinite alternate}
+@keyframes kenburns{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.09) translate(-14px,-8px)}}
+#shade{position:absolute;inset:0;background:var(--shade-v),var(--shade);pointer-events:none;transition:background .6s}
+.fog{position:absolute;inset:-20% -30%;pointer-events:none;opacity:.55;mix-blend-mode:screen}
+:root[data-theme="alba"] .fog{mix-blend-mode:normal;opacity:.35}
+.fog.a{background:radial-gradient(40% 22% at 30% 70%,rgba(190,200,215,.20),transparent 70%),radial-gradient(30% 18% at 70% 40%,rgba(190,200,215,.12),transparent 70%)}
+.fog.b{background:radial-gradient(36% 20% at 60% 80%,rgba(200,190,175,.16),transparent 70%),radial-gradient(28% 16% at 20% 30%,rgba(200,190,175,.10),transparent 70%)}
+.anim .fog.a{animation:fogA 46s linear infinite alternate}
+.anim .fog.b{animation:fogB 60s linear infinite alternate}
+@keyframes fogA{from{transform:translateX(-6%)}to{transform:translateX(8%)}}
+@keyframes fogB{from{transform:translateX(7%) translateY(2%)}to{transform:translateX(-7%) translateY(-2%)}}
+#fx{position:absolute;inset:0;pointer-events:none}
+#crestBg{position:absolute;right:-90px;top:120px;width:520px;opacity:.05;pointer-events:none;filter:blur(.3px)}
+:root[data-theme="alba"] #crestBg{filter:invert(1);opacity:.06}
+
+/* Cadenas colgantes */
+#hang{position:absolute;left:0;top:0;width:1280px;height:720px;pointer-events:none;overflow:visible}
+#hang .sw{transform-box:view-box}
+.anim #hang .sw1{animation:sway 7s ease-in-out infinite alternate}
+.anim #hang .sw2{animation:sway 9s ease-in-out -3s infinite alternate}
+@keyframes sway{from{transform:rotate(-1.6deg)}to{transform:rotate(1.6deg)}}
+
+/* ───── Logo ───── */
+#logo{position:absolute;left:30px;top:16px;width:360px;pointer-events:none;
+  filter:drop-shadow(0 6px 18px rgba(0,0,0,.55))}
+#logoGlow{position:absolute;left:40px;top:6px;width:360px;height:250px;pointer-events:none;
+  background:radial-gradient(50% 50% at 50% 48%,rgba(0,0,0,.55),transparent 72%)}
+:root[data-theme="alba"] #logoGlow{background:radial-gradient(50% 50% at 50% 48%,rgba(255,255,255,.5),transparent 72%)}
+:root[data-theme="alba"] #logo{filter:drop-shadow(0 4px 12px rgba(40,30,80,.35))}
+#logoSheen{position:absolute;left:30px;top:16px;width:360px;pointer-events:none;filter:brightness(2.4) saturate(.6);opacity:.9;
+  -webkit-mask-image:linear-gradient(105deg,transparent 42%,#000 50%,transparent 58%);-webkit-mask-size:300% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-position:120% 0}
+.anim #logoSheen{animation:sheen 9s ease-in-out 3s infinite}
+@keyframes sheen{0%,70%{-webkit-mask-position:120% 0}100%{-webkit-mask-position:-20% 0}}
+
+/* ───── Barra superior ───── */
+#top{position:absolute;right:28px;top:22px;display:flex;align-items:center;gap:22px;z-index:6}
+.hint{display:flex;align-items:center;gap:9px;font-family:var(--body);font-size:21px;font-weight:600;letter-spacing:.02em;color:var(--ink);cursor:pointer;opacity:.92}
+.hint:hover{opacity:1;color:var(--amber)}
+.glyph{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 5px;border-radius:12px;
+  border:1.6px solid currentColor;font-family:var(--display);font-size:11px;font-weight:700;line-height:1}
+.glyph.sq{border-radius:4px}
+body.fs .winbtns{display:none}
+#tools .iconbtn.focus{background:var(--line-soft);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--amber),0 0 12px var(--glow)}
+.winbtns{display:flex;gap:4px;margin-left:6px;-webkit-app-region:no-drag}
+.iconbtn{width:34px;height:30px;border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+.iconbtn:hover,.iconbtn.focus{background:var(--line-soft);color:var(--ink)}
+
+/* Franja de torres (como la franja de Dissidia) */
+#towers{position:absolute;left:600px;right:0;top:70px;height:50px;display:flex;align-items:center;gap:14px;padding-left:34px;
+  background:linear-gradient(90deg,transparent 0,var(--band) 90px,var(--band) 100%);
+  border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+#towers .lbl{font-family:var(--display);font-size:11px;letter-spacing:3px;color:var(--mute);margin-right:4px;white-space:nowrap}
+#towers .slots{display:flex;gap:9px;align-items:center}
+.slot{width:16px;height:16px;transform:rotate(45deg);border:1.4px solid var(--line);background:var(--line-soft);position:relative}
+.slot.done{background:var(--amber);border-color:var(--amber);box-shadow:0 0 10px var(--glow)}
+.slot.big{width:22px;height:22px;margin-left:6px}
+.slot.big::after{content:"";position:absolute;inset:4px;border:1px solid var(--line)}
+.anim .slot.shine{animation:slotShine 1.2s ease}
+@keyframes slotShine{40%{background:var(--bar3);box-shadow:0 0 14px var(--glow)}}
+#towers .count{font-family:var(--display);font-size:13px;letter-spacing:2px;color:var(--ink-2);margin-left:auto;margin-right:30px}
+
+/* ───── Menú principal ───── */
+#menu{position:absolute;left:660px;right:0;top:150px;display:flex;flex-direction:column;transition:opacity .35s,transform .45s cubic-bezier(.2,.8,.2,1)}
+#menu.away{opacity:0;transform:translateX(60px);pointer-events:none}
+.mi{position:relative;height:58px;display:flex;align-items:flex-end;padding-bottom:9px;cursor:pointer;
+  font-family:var(--body);font-weight:600;font-size:30px;letter-spacing:.045em;color:var(--ink);white-space:nowrap}
+.mi .t{position:relative;z-index:2;transition:transform .25s cubic-bezier(.2,.8,.2,1),color .2s}
+.mi .rule{position:absolute;left:-14px;right:60px;bottom:3px;height:1.6px;z-index:1;transform-origin:left;
+  background:linear-gradient(90deg,var(--ink-2) 0,var(--line) 55%,transparent 100%)}
+.mi .rule::before{content:"";position:absolute;left:-4px;top:-3.2px;width:8px;height:8px;transform:rotate(45deg);background:var(--ink-2)}
+.mi.sub{height:44px;font-size:24px;padding-bottom:7px;font-weight:600}
+.mi.sub .rule{height:1.2px;right:90px;opacity:.85}
+.mi.sub .rule::before{width:5px;height:5px;top:-2px;left:-2px}
+.mi .k{position:relative;z-index:2;margin-left:16px;font-family:var(--body);font-style:italic;font-size:18px;font-weight:500;color:var(--mute);transition:color .2s}
+.mi .bar{position:absolute;left:-96px;right:0;top:9px;bottom:1px;z-index:1;opacity:0;
+  background:linear-gradient(90deg,transparent 0,var(--bar1) 70px,var(--bar2) 46%,var(--bar1) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,220,180,.28),inset 0 -1px 0 rgba(0,0,0,.35);
+  clip-path:inset(0 0 0 100%)}
+.mi.sub .bar{top:5px}
+.mi.on .bar{opacity:1;clip-path:inset(0 0 0 0);transition:clip-path .32s cubic-bezier(.2,.8,.2,1),opacity .1s}
+.mi.on .t{color:#fff6e8;transform:translateX(8px);text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.mi.on .k{color:rgba(255,240,220,.78)}
+.mi.on .rule{opacity:0}
+.mi.dim{opacity:.38}
+.mi.hide{display:none}
+.subwrap{overflow:hidden;transition:height .38s cubic-bezier(.2,.8,.2,1)}
+/* entrada escalonada */
+.enter .mi{opacity:0;transform:translateX(70px)}
+.enter .mi .rule{transform:scaleX(0)}
+.entering .mi{animation:miIn .6s cubic-bezier(.2,.8,.2,1) both}
+.entering .mi .rule{animation:ruleIn .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes miIn{from{opacity:0;transform:translateX(70px)}to{opacity:1;transform:none}}
+@keyframes ruleIn{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* Cursor: cadena + garfio (la Cadena Oraclos de Aeron) */
+#cursor{position:absolute;left:0;top:0;width:96px;height:34px;z-index:5;pointer-events:none;
+  transition:transform .26s cubic-bezier(.3,1.4,.5,1);transform-origin:0 50%}
+#cursor svg{display:block;overflow:visible;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+#cursor .lash{transform-origin:0 50%;transform-box:fill-box}
+#cursor.snap .lash{animation:lash .34s cubic-bezier(.3,1.5,.5,1)}
+@keyframes lash{0%{transform:translateX(-26px) rotate(-14deg);opacity:.2}60%{transform:translateX(4px) rotate(3deg);opacity:1}100%{transform:none}}
+.anim #cursor .bob{animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateX(5px)}}
+#cursor.hidden{opacity:0}
+
+/* ───── Banda de descripción y pie ───── */
+#desc{position:absolute;left:0;right:0;top:594px;height:40px;display:flex;align-items:center;justify-content:center;
+  background:var(--band);border-top:1px solid var(--line);border-bottom:1px solid var(--line-soft);
+  font-size:22px;font-weight:500;color:var(--ink-2);letter-spacing:.02em}
+#desc span{transition:opacity .2s,transform .25s}
+#desc span.out{opacity:0;transform:translateY(4px)}
+#foot{position:absolute;left:0;right:0;top:644px;height:56px;display:flex;align-items:center;padding:0 26px 0 0}
+.plate{height:40px;display:flex;align-items:center;gap:26px;background:var(--band-2);border:1px solid var(--line-soft)}
+#time{padding:0 34px 0 80px;clip-path:polygon(0 0,100% 0,calc(100% - 22px) 100%,0 100%);border-left:0}
+.plate .cap{font-family:var(--display);font-size:13px;letter-spacing:3px;color:var(--mute)}
+.plate .val{font-family:var(--display);font-size:19px;letter-spacing:2px;color:var(--ink)}
+#ver{margin-left:auto;padding:0 40px 0 46px;clip-path:polygon(22px 0,100% 0,calc(100% - 14px) 50%,100% 100%,22px 100%,0 50%)}
+#ver .val{min-width:150px;text-align:center}
+#tools{display:flex;gap:6px;margin-left:18px}
+#tools .iconbtn{width:38px;height:36px}
+#tools .iconbtn.off{opacity:.45}
+
+/* ───── Paneles (Ajustes / Logros / Créditos) ───── */
+.panel{position:absolute;left:560px;right:34px;top:136px;height:440px;z-index:7;
+  background:var(--panel);border:1px solid var(--line);box-shadow:0 18px 50px rgba(0,0,0,.45);
+  display:flex;flex-direction:column;padding:20px 26px 14px;
+  opacity:0;transform:translateX(70px);pointer-events:none;transition:opacity .3s,transform .42s cubic-bezier(.2,.8,.2,1)}
+.panel.show{opacity:1;transform:none;pointer-events:auto}
+.panel::before,.panel::after{content:"";position:absolute;width:26px;height:26px;border:2px solid var(--amber);pointer-events:none}
+.panel::before{left:-6px;top:-6px;border-right:0;border-bottom:0}
+.panel::after{right:-6px;bottom:-6px;border-left:0;border-top:0}
+.phead{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+.phead h2{margin:0;font-family:var(--display);font-weight:600;font-size:22px;letter-spacing:5px;color:var(--ink)}
+.phead .sp{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.pbtn{font-family:var(--display);font-size:12px;letter-spacing:2.5px;padding:7px 14px;border:1px solid var(--line);color:var(--ink-2)}
+.pbtn:hover,.pbtn.focus{border-color:var(--amber);color:var(--ink)}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:6px;position:relative}
+.tab{flex:1;height:36px;font-family:var(--display);font-size:12.5px;font-weight:600;letter-spacing:2.2px;color:var(--mute);position:relative}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--ink)}
+.tab .lb{position:absolute;bottom:-1px;left:16%;right:16%;height:3px;background:var(--amber);transform:scaleX(0);transition:transform .28s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 10px var(--glow)}
+.tab.on .lb{transform:scaleX(1)}
+.tabkey{font-family:var(--display);font-size:10px;color:var(--mute);border:1px solid var(--line);border-radius:3px;padding:2px 4px;align-self:center}
+.rows{flex:1;overflow-y:auto;overflow-x:hidden;padding-right:4px;scrollbar-width:thin}
+.rows::-webkit-scrollbar{width:4px}.rows::-webkit-scrollbar-thumb{background:var(--line)}
+.grp{font-family:var(--display);font-size:11px;letter-spacing:3px;color:var(--amber);padding:12px 6px 5px;border-bottom:1px dashed var(--line-soft)}
+.row{display:flex;align-items:center;min-height:50px;padding:4px 6px 4px 12px;border-bottom:1px solid var(--line-soft);position:relative;
+  animation:rowIn .35s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rowIn{from{opacity:0;transform:translateX(18px)}}
+.row::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;background:var(--amber);transform:scaleY(0);transition:transform .2s}
+.row.sel{background:linear-gradient(90deg,var(--line-soft),transparent 80%)}
+.row.sel::before{transform:scaleY(1)}
+.row .lab{width:210px;flex:none}
+.row .lab b{display:block;font-family:var(--display);font-size:13.5px;font-weight:600;letter-spacing:2px}
+.row .lab i{display:block;font-size:15.5px;color:var(--mute);margin-top:1px}
+.opts{display:flex;gap:6px;flex-wrap:wrap}
+.opt{min-width:46px;height:30px;padding:0 12px;border:1px solid var(--line);font-size:17px;font-weight:600;color:var(--ink-2);transition:background .15s,color .15s}
+.opt:hover{border-color:var(--ink-2);color:var(--ink)}
+.opt.on{background:linear-gradient(180deg,var(--bar2),var(--bar1));border-color:var(--bar2);color:#fff4e4}
+.slider{display:flex;align-items:center;gap:16px;flex:1}
+.track{position:relative;width:250px;height:6px;background:var(--line-soft);border:1px solid var(--line);cursor:pointer}
+.fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--bar1),var(--bar2))}
+.knob{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;transform:rotate(45deg);background:var(--ink);border:2px solid var(--bar2)}
+.slider .pct{font-family:var(--display);font-size:14px;letter-spacing:1px;width:50px}
+.row .info{font-size:18px;color:var(--ink-2);letter-spacing:.02em}
+/* teclado activo: fuera iconos de mando */
+body.kbmode .glyph,body.kbmode .tabkey,body.kbmode .bind img{display:none}
+.bind{min-width:170px;height:32px;padding:0 14px;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  font-family:var(--display);font-size:13px;font-weight:600;letter-spacing:1.6px;color:var(--ink);background:var(--line-soft);transition:border-color .15s,background .15s}
+.bind img{height:24px;width:auto}
+.bind:hover,.row.sel .bind{border-color:var(--ink-2)}
+.bind.live{border-color:var(--amber);background:linear-gradient(180deg,rgba(194,90,28,.35),rgba(110,37,13,.35));color:#fff4e4;animation:liveBlink 1s ease-in-out infinite}
+@keyframes liveBlink{50%{box-shadow:0 0 14px var(--glow)}}
+.bind.none{color:var(--mute)}
+.rows.still .row{animation:none}
+.pnote{font-size:15.5px;font-style:italic;color:var(--mute);padding-top:8px}
+
+/* Logros */
+.achtop{display:flex;align-items:center;gap:20px;margin-bottom:12px}
+.achtop .num{font-family:var(--display);font-size:30px}
+.achtop .num small{font-size:14px;color:var(--mute);letter-spacing:2px;margin-left:6px}
+.achbar{flex:1;height:8px;border:1px solid var(--line);background:var(--line-soft)}
+.achbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--bar1),var(--bar3));transition:width 1s}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;overflow-y:auto;padding:6px;margin:-6px}
+.tcard{border:1px solid var(--line-soft);padding:10px 12px;display:flex;gap:12px;align-items:center;background:var(--line-soft);animation:rowIn .4s both}
+.tcard .ico{width:30px;height:30px;transform:rotate(45deg);border:1.5px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center}
+.tcard .ico span{transform:rotate(-45deg);font-family:var(--display);font-size:11px;color:var(--mute)}
+.tcard b{display:block;font-family:var(--display);font-size:12px;letter-spacing:1.5px}
+.tcard i{font-size:14px;color:var(--mute)}
+.tcard{transition:border-color .15s,background .15s,transform .2s cubic-bezier(.2,.8,.2,1)}
+.tcard.sel{border-color:var(--amber);background:linear-gradient(90deg,rgba(194,90,28,.28),var(--line-soft));box-shadow:inset 0 0 0 1px var(--amber),0 0 10px var(--glow)}
+.tcard.sel .ico{border-color:var(--amber)}
+.tcard.final{grid-column:span 4;justify-content:center;border-color:var(--amber)}
+
+/* Créditos */
+.credits{flex:1;overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(180deg,transparent,#000 14%,#000 86%,transparent)}
+.credits .roll{position:absolute;left:0;right:0;text-align:center;top:100%}
+.anim .credits.run .roll{animation:roll 26s linear infinite}
+.credits.run .roll{top:0}
+@keyframes roll{from{transform:translateY(330px)}to{transform:translateY(-100%)}}
+.credits h3{font-family:var(--display);font-size:12px;letter-spacing:4px;color:var(--amber);margin:26px 0 6px;font-weight:600}
+.credits p{margin:2px 0;font-size:21px}
+
+/* ───── Intro ───── */
+#intro{position:absolute;inset:0;z-index:40;background:#000;display:flex;align-items:center;justify-content:center;transition:opacity .9s}
+#intro.gone{opacity:0;pointer-events:none}
+#intro svg.ch{position:absolute;inset:0;animation:chFade 1.4s ease 1.9s forwards}
+@keyframes chFade{to{opacity:.12}}
+#intro .cl{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .75s cubic-bezier(.6,0,.2,1) forwards}
+#intro .cl.b{animation-delay:.22s}
+@keyframes draw{to{stroke-dashoffset:0}}
+#iflash{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,226,180,.9),rgba(233,161,74,.25) 30%,transparent 60%);opacity:0;animation:flash 1.1s ease-out .78s forwards}
+@keyframes flash{0%{opacity:0}12%{opacity:1}100%{opacity:0}}
+#icrest{position:absolute;width:300px;opacity:0;animation:crestIn 1.9s cubic-bezier(.2,.8,.2,1) .9s forwards}
+@keyframes crestIn{0%{opacity:0;transform:scale(1.35);filter:blur(8px) drop-shadow(0 0 0 transparent)}55%{opacity:.95;filter:blur(0) drop-shadow(0 0 30px rgba(233,161,74,.8))}100%{opacity:.16;transform:scale(1);filter:drop-shadow(0 0 0 transparent)}}
+#ilogo{position:absolute;width:560px;opacity:0;animation:logoIn 1.6s ease 2.1s forwards}
+@keyframes logoIn{from{opacity:0;transform:translateY(10px);filter:blur(6px) brightness(2)}to{opacity:1;transform:none;filter:none}}
+#itxt{position:absolute;bottom:90px;font-family:var(--display);font-size:12px;letter-spacing:6px;color:#9a9182;opacity:0;animation:fadeIn 1s ease 3.2s forwards}
+@keyframes fadeIn{to{opacity:1}}
+#skip{position:absolute;right:28px;bottom:22px;font-family:var(--display);font-size:11px;letter-spacing:3px;color:#6d675e}
+
+/* ───── Lanzamiento: medidor de la maldición ───── */
+#launch{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  background:radial-gradient(circle at 50% 46%,rgba(34,16,6,.92),rgba(0,0,0,.98) 62%);opacity:0;pointer-events:none;transition:opacity .5s}
+#launch.show{opacity:1;pointer-events:auto}
+#gauge{position:relative;width:230px;height:230px}
+#gauge svg{position:absolute;inset:0;overflow:visible}
+#gauge img{position:absolute;left:50%;top:50%;width:120px;transform:translate(-50%,-52%);opacity:.9}
+#gArc{stroke-dasharray:1;stroke-dashoffset:1}
+#launch.show #gArc{animation:gfill 2.6s cubic-bezier(.5,0,.3,1) .2s forwards}
+@keyframes gfill{to{stroke-dashoffset:0}}
+#launch.show #gauge img{animation:pulse 1.3s ease-in-out infinite}
+@keyframes pulse{50%{filter:drop-shadow(0 0 18px rgba(233,161,74,.9));transform:translate(-50%,-52%) scale(1.04)}}
+#launch .lt{font-family:var(--display);font-size:16px;letter-spacing:6px;color:#efe7d7}
+#launch .ls{font-size:19px;font-style:italic;color:#9a9182;min-height:24px}
+
+/* Diálogo */
+#dim{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:20;opacity:0;pointer-events:none;transition:opacity .25s}
+#dim.show{opacity:1;pointer-events:auto}
+#dlg{position:absolute;left:50%;top:50%;width:440px;transform:translate(-50%,-46%);z-index:21;opacity:0;pointer-events:none;transition:opacity .25s,transform .3s;
+  background:var(--panel);border:1px solid var(--line);padding:26px 30px 22px;text-align:center}
+#dlg.show{opacity:1;transform:translate(-50%,-50%);pointer-events:auto}
+#dlg h3{margin:0 0 6px;font-family:var(--display);font-size:18px;letter-spacing:4px;font-weight:600}
+#dlg p{margin:0 0 20px;font-size:19px;color:var(--ink-2)}
+#dlg .btns{display:flex;gap:12px;justify-content:center}
+#dlg .btns .pbtn{min-width:120px;font-size:13px}
+#toast{position:absolute;left:50%;top:16px;transform:translate(-50%,-10px);z-index:25;padding:8px 22px;background:var(--band-2);border:1px solid var(--amber);
+  font-size:18px;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+/* cursor propio (garfio de acero) · se oculta al usar el mando */
+html,body,#stage{cursor:-webkit-image-set(url(assets/cursor.png) 1x,url(assets/cursor@2x.png) 2x) 2 2,default}
+button,.mi,.hint,.tab,.opt,.track,.tcard,.bind,.pbtn,.iconbtn,[data-go],[data-back]{cursor:-webkit-image-set(url(assets/cursor_on.png) 1x,url(assets/cursor_on@2x.png) 2x) 2 2,pointer}
+body.nocur,body.nocur *{cursor:none!important}
+</style>
+</head>
+<body class="anim">
+<div id="dragbar"></div>
+<div id="stage">
+  <div id="art"></div>
+  <div class="fog a"></div><div class="fog b"></div>
+  <div id="shade"></div>
+  <img id="crestBg" src="assets/crest.png" alt="">
+  <svg id="hang" viewBox="0 0 1280 720" aria-hidden="true">
+    <defs>
+      <g id="chainV"><!-- eslabones verticales -->
+        <ellipse cx="0" cy="0" rx="5.2" ry="9" fill="none" stroke="currentColor" stroke-width="2.6"/>
+        <rect x="-1.4" y="10" width="2.8" height="14" rx="1.4" fill="currentColor"/>
+      </g>
+    </defs>
+  </svg>
+  <canvas id="fx" width="1280" height="720"></canvas>
+
+  <div id="logoGlow"></div>
+  <img id="logo" src="assets/logo.png" alt="Pandora's Tower">
+  <img id="logoSheen" src="assets/logo.png" alt="">
+
+  <div id="top">
+    <div class="winbtns">
+      <button class="iconbtn" id="bMin" title="Minimizar"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7.5h10" stroke="currentColor" stroke-width="1.6"/></svg></button>
+      <button class="iconbtn" id="bClose" title="Cerrar"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.6"/></svg></button>
+    </div>
+  </div>
+
+  <div id="towers">
+    <span class="lbl">TORRES</span>
+    <div class="slots" id="slots"></div>
+    <span class="count" id="tcount">0 / 13</span>
+  </div>
+
+  <div id="menu" class="enter"></div>
+  <div id="cursor" class="hidden">
+    <svg width="96" height="34" viewBox="0 0 96 34">
+      <defs><linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6efe0"/><stop offset=".55" stop-color="#b9b1a2"/><stop offset="1" stop-color="#6d665b"/></linearGradient></defs>
+      <g class="lash"><g class="bob">
+        <ellipse cx="8" cy="17" rx="7" ry="4.3" fill="none" stroke="url(#steel)" stroke-width="2.6"/>
+        <rect x="14" y="15.6" width="12" height="2.8" rx="1.4" fill="url(#steel)"/>
+        <ellipse cx="32" cy="17" rx="7" ry="4.3" fill="none" stroke="url(#steel)" stroke-width="2.6"/>
+        <rect x="38" y="15.6" width="12" height="2.8" rx="1.4" fill="url(#steel)"/>
+        <!-- garfio -->
+        <path d="M50 17 L58 10.5 L83 16 L92 17 L83 18 L58 23.5 Z" fill="url(#steel)" stroke="#3b342b" stroke-width=".8"/>
+        <path d="M60 11.5 L54 4 L66 12.5 Z M60 22.5 L54 30 L66 21.5 Z" fill="url(#steel)" stroke="#3b342b" stroke-width=".8"/>
+        <circle cx="62" cy="17" r="2.6" fill="#e9a14a"/>
+      </g></g>
+    </svg>
+  </div>
+
+  <section class="panel" id="pSettings">
+    <div class="phead"><h2>AJUSTES</h2><span class="sp"></span><button class="pbtn" data-back>VOLVER</button></div>
+    <div class="tabs" id="tabs"></div>
+    <div class="rows" id="rows"></div>
+    <div class="pnote" id="pnote"></div>
+  </section>
+
+  <section class="panel" id="pAch">
+    <div class="phead"><h2>LOGROS</h2><span class="sp"></span><button class="pbtn" id="achTest"><span class="glyph">X</span> PROBAR AVISO</button><button class="pbtn" data-back>VOLVER</button></div>
+    <div class="achtop"><div class="num" id="achNum">0<small>/ 13 TORRES</small></div><div class="achbar"><i id="achBar"></i></div></div>
+    <div class="tgrid" id="tgrid"></div>
+    <div class="pnote">Vista previa · los logros (RetroAchievements) se conectarán en una fase posterior, igual que en The Last Story.</div>
+  </section>
+
+  <section class="panel" id="pCredits">
+    <div class="phead"><h2>CRÉDITOS</h2><span class="sp"></span><button class="pbtn" data-back>VOLVER</button></div>
+    <div class="credits" id="credits"><div class="roll">
+      <h3>DIONIXU'S LAUNCHER</h3><p>Diseño y desarrollo del launcher</p><p>Dionixu</p>
+      <h3>PANDORA'S TOWER</h3><p>© 2011–2012 Nintendo / Ganbarion</p>
+      <h3>EMULACIÓN</h3><p>Dolphin Emulator</p>
+      <h3>TEXTURAS HD</h3><p>Paquete SX3EXJ y sus autores</p>
+      <h3>TIPOGRAFÍA</h3><p>Cinzel · Cormorant Garamond (SIL OFL)</p>
+      <h3>ASISTENCIA</h3><p>Claude</p>
+      <h3>&nbsp;</h3><p style="font-style:italic;color:var(--mute)">Gracias por jugar.</p>
+    </div></div>
+  </section>
+
+  <div id="desc"><span id="descTxt"></span></div>
+  <div id="foot">
+    <div class="plate" id="time"><span class="cap">TIEMPO DE JUEGO</span><span class="val" id="playtime">00:00:00</span></div>
+    <div class="plate" id="ver"><span class="cap">VOCES</span><span class="val" id="verTxt">JAPONÉS</span></div>
+    <div id="tools">
+      <button class="iconbtn" id="bTheme" title="Tema"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M14.5 13.2A6.5 6.5 0 0 1 7 3.4a6.8 6.8 0 1 0 9.2 9.2 6.4 6.4 0 0 1-1.7.6z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
+      <button class="iconbtn" id="bFull" title="Pantalla completa (F11)"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M3 7V3h4M13 3h4v4M17 13v4h-4M7 17H3v-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+      <button class="iconbtn" id="bMusic" title="Música"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M8 15.5V4l9-2v11.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="5.6" cy="15.5" r="2.4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="14.6" cy="13.5" r="2.4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+    </div>
+  </div>
+
+  <div id="launch">
+    <div id="gauge">
+      <svg viewBox="0 0 230 230">
+        <circle cx="115" cy="115" r="104" fill="none" stroke="rgba(239,231,215,.12)" stroke-width="7"/>
+        <circle cx="115" cy="115" r="92" fill="none" stroke="rgba(239,231,215,.18)" stroke-width="1" stroke-dasharray="2 7"/>
+        <circle id="gArc" cx="115" cy="115" r="104" fill="none" stroke="url(#gg)" stroke-width="7" stroke-linecap="round" pathLength="1" transform="rotate(-90 115 115)"/>
+        <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6e250d"/><stop offset=".6" stop-color="#c25a1c"/><stop offset="1" stop-color="#ffd38f"/></linearGradient></defs>
+      </svg>
+      <img src="assets/crest.png" alt="">
+    </div>
+    <div class="lt" id="launchT">INICIANDO</div>
+    <div class="ls" id="launchS"></div>
+  </div>
+
+  <div id="dim"></div>
+  <div id="dlg"><h3 id="dlgT">SALIR</h3><p id="dlgP">¿Cerrar el launcher?</p><div class="btns"><button class="pbtn" id="dlgNo">CANCELAR</button><button class="pbtn" id="dlgYes">SALIR</button></div></div>
+  <div id="toast"></div>
+
+  <div id="intro">
+    <svg class="ch" viewBox="0 0 1280 720" aria-hidden="true">
+      <defs>
+        <pattern id="links" width="30" height="16" patternUnits="userSpaceOnUse">
+          <ellipse cx="9" cy="8" rx="8" ry="5" fill="none" stroke="#cfc6b4" stroke-width="2.6"/>
+          <rect x="16" y="6.6" width="13" height="2.8" rx="1.4" fill="#a59c8b"/>
+        </pattern>
+        <mask id="mA" maskUnits="userSpaceOnUse"><line class="cl" x1="-60" y1="-40" x2="1340" y2="760" stroke="#fff" stroke-width="22" pathLength="1"/></mask>
+        <mask id="mB" maskUnits="userSpaceOnUse"><line class="cl b" x1="1340" y1="-40" x2="-60" y2="760" stroke="#fff" stroke-width="22" pathLength="1"/></mask>
+      </defs>
+      <g mask="url(#mA)"><rect x="-200" y="352" width="1700" height="16" fill="url(#links)" transform="rotate(29.7 640 360)"/></g>
+      <g mask="url(#mB)"><rect x="-200" y="352" width="1700" height="16" fill="url(#links)" transform="rotate(-29.7 640 360)"/></g>
+    </svg>
+    <div id="iflash"></div>
+    <img id="icrest" src="assets/crest.png" alt="">
+    <img id="ilogo" src="assets/logo.png" alt="">
+    <div id="itxt">DIONIXU'S LAUNCHER</div>
+    <div id="skip">CUALQUIER TECLA PARA SALTAR</div>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (s) => document.querySelector(s);
+  const stage = $('#stage');
+
+  /* ───── Puente con Electron (si existe) y guardado ───── */
+  const host = window.ptHost || null;
+  const post = (cmd, extra) => { if (host) host.postMessage(JSON.stringify(Object.assign({ cmd }, extra || {}))); };
+  const api = host ? { saveConfig: (c) => post('save', { config: c }), launch: (v, c) => post('play', { voice: v, config: c }),
+    quit: () => post('close'), minimize: () => post('minimize'), fullscreen: () => post('toggleFull') } : null;
+  let hostState = { gameJpOk: true, gameEnOk: true, dolphinOk: true };
+  const DEF = { music: 'on', mvol: 70, sfx: 'on', gvol: 100,
+    res: '1080', mode: 'full', aspect: '169', vsync: 'on', hd: 'on', aa: '4', af: '16',
+    buttons: 'auto', autoControls: 'on', sens: 50, invert: 'off', kbCam: 'mouse', padInvert: 'off',
+    voice: 'jp', text: 'es', ui: 'es',
+    intro: 'on', achToast: 'on', anim: 'on', theme: 'noche', particles: 'on', playtime: 0 };
+  let cfg = Object.assign({}, DEF);
+  try { const s = localStorage.getItem('pt_cfg'); if (s) Object.assign(cfg, JSON.parse(s)); } catch (e) {}
+  // dispositivo en uso: con teclado/ratón se ocultan los iconos del mando
+  let inputDev = cfg.lastDevice === 'kb' ? 'kb' : 'pad';
+  try { const gp = navigator.getGamepads ? [...navigator.getGamepads()].filter(Boolean) : []; if (!gp.length) inputDev = 'kb'; } catch (e) {}
+  document.body.classList.toggle('kbmode', inputDev === 'kb');
+  // ───── Idioma del launcher (Ajustes → Idioma → IDIOMA): traduce lo que se pinta, sin tocar la lógica ─────
+  // Clave = texto en español tal como aparece; valor = [inglés, francés]
+  const I18N = {
+    // menú principal y descripciones
+    'Iniciar juego': ['Start game', 'Lancer le jeu'], 'Ajustes': ['Settings', 'Réglages'], 'Logros': ['Achievements', 'Succès'],
+    'Créditos': ['Credits', 'Crédits'], 'Salir': ['Quit', 'Quitter'],
+    'Viaja a la Cicatriz y lucha contra la maldición de Elena.': ['Travel to the Scar and fight Elena’s curse.', 'Rends-toi à la Cicatrice et combats la malédiction d’Elena.'],
+    'Gráficos, sonido, controles e idioma del juego y del launcher.': ['Graphics, sound, controls and language for the game and the launcher.', 'Graphismes, son, commandes et langue du jeu et du launcher.'],
+    'Tu avance por las trece torres del Observatorio.': ['Your progress through the thirteen towers of the Observatory.', 'Ta progression dans les treize tours de l’Observatoire.'],
+    'Quién hizo posible este launcher.': ['Who made this launcher possible.', 'Ceux qui ont rendu ce launcher possible.'],
+    'Cerrar el launcher.': ['Close the launcher.', 'Fermer le launcher.'],
+    'Cambiar el tema del launcher (Noche / Alba).': ['Change the launcher theme (Night / Dawn).', 'Changer le thème du launcher (Nuit / Aube).'],
+    'Pantalla completa o ventana.': ['Full screen or window.', 'Plein écran ou fenêtre.'],
+    'Activar o silenciar la música del menú.': ['Turn the menu music on or off.', 'Activer ou couper la musique du menu.'],
+    // barra, pie y títulos
+    'TORRES': ['TOWERS', 'TOURS'], 'TIEMPO DE JUEGO': ['PLAY TIME', 'TEMPS DE JEU'], 'VOCES': ['VOICES', 'VOIX'],
+    'AJUSTES': ['SETTINGS', 'RÉGLAGES'], 'LOGROS': ['ACHIEVEMENTS', 'SUCCÈS'], 'CRÉDITOS': ['CREDITS', 'CRÉDITS'], 'VOLVER': ['BACK', 'RETOUR'],
+    'PROBAR AVISO': ['TEST ALERT', 'TESTER L’ALERTE'], '/ 13 TORRES': ['/ 13 TOWERS', '/ 13 TOURS'],
+    'Vista previa · los logros (RetroAchievements) se conectarán en una fase posterior, igual que en The Last Story.':
+      ['Preview · achievements will be connected in a later update, like in The Last Story.', 'Aperçu · les succès seront connectés dans une prochaine mise à jour, comme dans The Last Story.'],
+    'Sin explorar': ['Unexplored', 'Inexplorée'], 'LA TORRE CENTRAL': ['THE CENTRAL TOWER', 'LA TOUR CENTRALE'], 'Libera a Elena': ['Free Elena', 'Libère Elena'],
+    'La Torre Central': ['The Central Tower', 'La Tour centrale'],
+    'La Torre Central · derrota a los trece amos y libera a Elena de la maldición.': ['The Central Tower · defeat the thirteen masters and free Elena from the curse.', 'La Tour centrale · vaincs les treize maîtres et libère Elena de la malédiction.'],
+    'Has derrotado al amo de la torre.': ['You defeated the tower’s master.', 'Tu as vaincu le maître de la tour.'],
+    'Has liberado a Elena de la maldición.': ['You freed Elena from the curse.', 'Tu as libéré Elena de la malédiction.'],
+    'Diseño y desarrollo del launcher': ['Launcher design and development', 'Conception et développement du launcher'],
+    'EMULACIÓN': ['EMULATION', 'ÉMULATION'], 'TEXTURAS HD': ['HD TEXTURES', 'TEXTURES HD'], 'Paquete SX3EXJ y sus autores': ['SX3EXJ pack and its authors', 'Pack SX3EXJ et ses auteurs'],
+    'TIPOGRAFÍA': ['TYPOGRAPHY', 'TYPOGRAPHIE'], 'ASISTENCIA': ['ASSISTANCE', 'ASSISTANCE'], 'Gracias por jugar.': ['Thanks for playing.', 'Merci d’avoir joué.'],
+    'INICIANDO': ['STARTING', 'LANCEMENT'], 'VOCES EN JAPONÉS': ['JAPANESE VOICES', 'VOIX JAPONAISES'], 'VOCES EN INGLÉS': ['ENGLISH VOICES', 'VOIX ANGLAISES'],
+    'Preparando Dolphin…': ['Preparing Dolphin…', 'Préparation de Dolphin…'], 'Aplicando ajustes…': ['Applying settings…', 'Application des réglages…'],
+    'Cargando texturas HD…': ['Loading HD textures…', 'Chargement des textures HD…'], 'Abriendo el juego…': ['Opening the game…', 'Ouverture du jeu…'],
+    'Juego iniciado': ['Game started', 'Jeu lancé'],
+    'SALIR': ['QUIT', 'QUITTER'], '¿Cerrar el launcher?': ['Close the launcher?', 'Fermer le launcher ?'], 'CANCELAR': ['CANCEL', 'ANNULER'],
+    'CUALQUIER TECLA PARA SALTAR': ['PRESS ANY KEY TO SKIP', 'APPUIE SUR UNE TOUCHE POUR PASSER'],
+    'Minimizar': ['Minimize', 'Réduire'], 'Cerrar': ['Close', 'Fermer'], 'Tema': ['Theme', 'Thème'], 'Pantalla completa (F11)': ['Full screen (F11)', 'Plein écran (F11)'], 'Música': ['Music', 'Musique'],
+    // avisos
+    'Tema: Alba': ['Theme: Dawn', 'Thème : Aube'], 'Tema: Noche': ['Theme: Night', 'Thème : Nuit'], 'Controles restablecidos': ['Controls reset', 'Commandes réinitialisées'],
+    'Falta la versión con voces japonesas (paso 2)': ['The Japanese-voice version is missing', 'La version aux voix japonaises est absente'],
+    'Falta la versión con voces japonesas (paso 2) · elige inglés en Ajustes → Idioma': ['The Japanese-voice version is missing · choose English in Settings → Language', 'La version aux voix japonaises est absente · choisis l’anglais dans Réglages → Langue'],
+    'No encuentro Dolphin (Dolphin-x64\\Dolphin.exe)': ['Dolphin not found (Dolphin-x64\\Dolphin.exe)', 'Dolphin introuvable (Dolphin-x64\\Dolphin.exe)'],
+    'Maqueta: aquí se abriría el juego': ['Preview: the game would open here', 'Aperçu : le jeu s’ouvrirait ici'],
+    'Maqueta: aquí se cerraría el launcher': ['Preview: the launcher would close here', 'Aperçu : le launcher se fermerait ici'],
+    // pestañas y grupos
+    'SONIDO': ['SOUND', 'SON'], 'GRÁFICOS': ['GRAPHICS', 'GRAPHISMES'], 'CONTROLES': ['CONTROLS', 'COMMANDES'], 'IDIOMA': ['LANGUAGE', 'LANGUE'], 'GENERAL': ['GENERAL', 'GÉNÉRAL'],
+    'LAUNCHER': ['LAUNCHER', 'LAUNCHER'], 'JUEGO': ['GAME', 'JEU'], 'IMAGEN': ['PICTURE', 'IMAGE'], 'CALIDAD': ['QUALITY', 'QUALITÉ'], 'PRESENTACIÓN': ['PRESENTATION', 'PRÉSENTATION'],
+    'DISPOSITIVO': ['DEVICE', 'PÉRIPHÉRIQUE'], 'MOVIMIENTO': ['MOVEMENT', 'DÉPLACEMENT'], 'CÁMARA': ['CAMERA', 'CAMÉRA'], 'BOTONES': ['BUTTONS', 'BOUTONS'], 'OTROS': ['OTHER', 'AUTRES'],
+    // filas
+    'MÚSICA': ['MUSIC', 'MUSIQUE'], 'Tema del launcher': ['Launcher theme', 'Thème du launcher'], 'VOLUMEN MÚSICA': ['MUSIC VOLUME', 'VOLUME MUSIQUE'], 'Solo en el launcher': ['Launcher only', 'Uniquement dans le launcher'],
+    'EFECTOS': ['EFFECTS', 'EFFETS'], 'Sonidos del menú': ['Menu sounds', 'Sons du menu'], 'VOLUMEN': ['VOLUME', 'VOLUME'], 'Volumen general del juego': ['Overall game volume', 'Volume général du jeu'],
+    'RESOLUCIÓN': ['RESOLUTION', 'RÉSOLUTION'], 'Render interno': ['Internal render', 'Rendu interne'], 'PANTALLA': ['DISPLAY', 'AFFICHAGE'], 'Modo de la ventana': ['Window mode', 'Mode de fenêtre'],
+    'Completa': ['Full', 'Plein écran'], 'Sin bordes': ['Borderless', 'Sans bordure'], 'Ventana': ['Window', 'Fenêtre'],
+    'PROPORCIÓN': ['ASPECT', 'PROPORTION'], 'Relación de aspecto': ['Aspect ratio', 'Format d’image'], 'Evita cortes de imagen': ['Prevents screen tearing', 'Évite les déchirures d’image'],
+    'Paquete SX3EXJ': ['SX3EXJ pack', 'Pack SX3EXJ'], 'Activadas': ['On', 'Activées'], 'Originales': ['Original', 'Originales'],
+    'ANTIALIASING': ['ANTI-ALIASING', 'ANTICRÉNELAGE'], 'Suaviza los bordes': ['Smooths edges', 'Adoucit les contours'], 'FILTRADO': ['FILTERING', 'FILTRAGE'],
+    'Nitidez de texturas lejanas': ['Sharpness of distant textures', 'Netteté des textures lointaines'],
+    'Doblaje del juego': ['Game dub', 'Doublage du jeu'], 'Japonés': ['Japanese', 'Japonais'], 'Inglés': ['English', 'Anglais'],
+    'TEXTOS': ['TEXT', 'TEXTES'], 'Menús y subtítulos': ['Menus and subtitles', 'Menus et sous-titres'], 'Idioma de este menú': ['Language of this menu', 'Langue de ce menu'],
+    'INTRO': ['INTRO', 'INTRO'], 'Animación al abrir': ['Animation on start', 'Animation au démarrage'], 'AVISO DE LOGROS': ['ACHIEVEMENT ALERT', 'ALERTE DE SUCCÈS'],
+    'Aviso dentro del juego al conseguir un logro': ['In-game alert when you earn an achievement', 'Alerte en jeu quand tu obtiens un succès'],
+    'ANIMACIONES': ['ANIMATIONS', 'ANIMATIONS'], 'Movimiento del fondo y niebla': ['Background motion and fog', 'Mouvement du fond et brume'],
+    'PÉTALOS': ['PETALS', 'PÉTALES'], 'Partículas flotando': ['Floating particles', 'Particules flottantes'], 'TEMA': ['THEME', 'THÈME'], 'Estilo del launcher': ['Launcher style', 'Style du launcher'],
+    'Noche': ['Night', 'Nuit'], 'Alba': ['Dawn', 'Aube'], 'Sí': ['Yes', 'Oui'], 'No': ['No', 'Non'], 'Teclado': ['Keyboard', 'Clavier'],
+    'EDITAR': ['EDIT', 'MODIFIER'], 'Mando y teclado funcionan a la vez': ['Gamepad and keyboard work at the same time', 'Manette et clavier fonctionnent en même temps'],
+    'Mando': ['Gamepad', 'Manette'], 'Teclado y ratón': ['Keyboard & mouse', 'Clavier et souris'], 'ICONOS': ['PROMPTS', 'ICÔNES'], 'Botones que muestra el juego': ['Buttons shown in game', 'Boutons affichés en jeu'],
+    'CONTROLES AUTOMÁTICOS': ['AUTOMATIC CONTROLS', 'COMMANDES AUTOMATIQUES'], 'No = conserva lo que configures a mano en Dolphin': ['No = keep what you set up by hand in Dolphin', 'Non = garde ce que tu as réglé à la main dans Dolphin'],
+    'No (Dolphin)': ['No (Dolphin)', 'Non (Dolphin)'], 'Cómo mueves la cámara': ['How you move the camera', 'Comment tu bouges la caméra'], 'Ratón': ['Mouse', 'Souris'], 'Teclas': ['Keys', 'Touches'],
+    'SENSIBILIDAD': ['SENSITIVITY', 'SENSIBILITÉ'], 'Velocidad del ratón': ['Mouse speed', 'Vitesse de la souris'], 'INVERTIR Y': ['INVERT Y', 'INVERSER Y'],
+    'Eje vertical del ratón': ['Mouse vertical axis', 'Axe vertical de la souris'], 'Eje vertical del stick derecho': ['Right stick vertical axis', 'Axe vertical du stick droit'],
+    'VOLVER AL LAUNCHER': ['BACK TO LAUNCHER', 'RETOUR AU LAUNCHER'], 'Mientras juegas': ['While playing', 'Pendant le jeu'], 'RESTABLECER': ['RESET', 'RÉINITIALISER'],
+    'Controles por defecto de este dispositivo': ['Default controls for this device', 'Commandes par défaut de ce périphérique'],
+    'AVANZAR': ['FORWARD', 'AVANCER'], 'RETROCEDER': ['BACK', 'RECULER'], 'IZQUIERDA': ['LEFT', 'GAUCHE'], 'DERECHA': ['RIGHT', 'DROITE'],
+    'CÁMARA ARRIBA': ['CAMERA UP', 'CAMÉRA HAUT'], 'CÁMARA ABAJO': ['CAMERA DOWN', 'CAMÉRA BAS'], 'CÁMARA IZQ.': ['CAMERA LEFT', 'CAMÉRA GAUCHE'], 'CÁMARA DER.': ['CAMERA RIGHT', 'CAMÉRA DROITE'],
+    'BOTÓN a': ['BUTTON a', 'BOUTON a'], 'BOTÓN b': ['BUTTON b', 'BOUTON b'], 'BOTÓN x': ['BUTTON x', 'BOUTON x'], 'BOTÓN y': ['BUTTON y', 'BOUTON y'],
+    'BOTÓN ZL': ['BUTTON ZL', 'BOUTON ZL'], 'BOTÓN ZR': ['BUTTON ZR', 'BOUTON ZR'], 'BOTÓN +': ['BUTTON +', 'BOUTON +'], 'BOTÓN −': ['BUTTON −', 'BOUTON −'],
+    'GATILLO L': ['TRIGGER L', 'GÂCHETTE L'], 'GATILLO R': ['TRIGGER R', 'GÂCHETTE R'],
+    'CRUCETA ↑': ['D-PAD ↑', 'CROIX ↑'], 'CRUCETA ↓': ['D-PAD ↓', 'CROIX ↓'], 'CRUCETA ←': ['D-PAD ←', 'CROIX ←'], 'CRUCETA →': ['D-PAD →', 'CROIX →'],
+    'Aceptar · acción': ['Confirm · action', 'Valider · action'], 'Cancelar · volver': ['Cancel · back', 'Annuler · retour'], 'Menú · pausa': ['Menu · pause', 'Menu · pause'],
+    // nombres de teclas que muestra la interfaz
+    'ESPACIO': ['SPACE', 'ESPACE'], 'SHIFT DER.': ['R-SHIFT', 'MAJ D.'], 'CTRL DER.': ['R-CTRL', 'CTRL D.'], 'ENTER NUM': ['NUM ENTER', 'ENTRÉE NUM'],
+    'BLOQ MAYÚS': ['CAPS LOCK', 'VERR MAJ'], 'SUPR': ['DEL', 'SUPPR'], 'INICIO': ['HOME', 'DÉBUT'], 'FIN': ['END', 'FIN'], 'RE PÁG': ['PG UP', 'PG PRÉC'], 'AV PÁG': ['PG DN', 'PG SUIV'],
+    'CLIC IZQ.': ['LEFT CLICK', 'CLIC GAUCHE'], 'CLIC DER.': ['RIGHT CLICK', 'CLIC DROIT'], 'CLIC RUEDA': ['MIDDLE CLICK', 'CLIC MOLETTE'],
+    'LATERAL 1': ['MOUSE 4', 'SOURIS 4'], 'LATERAL 2': ['MOUSE 5', 'SOURIS 5'], 'RUEDA ↑': ['WHEEL ↑', 'MOLETTE ↑'], 'RUEDA ↓': ['WHEEL ↓', 'MOLETTE ↓'],
+    'CRUCETA': ['D-PAD', 'CROIX']
+  };
+  // frases con partes variables
+  const I18N_RX = [
+    [/^Por defecto: (.+)$/, ['Default: $1', 'Par défaut : $1']],
+    [/^Intercambiado con (.+)$/, ['Swapped with $1', 'Échangé avec $1']],
+    [/^(.+) está reservada \(F1 volver al launcher · F9 captura\)$/, ['$1 is reserved (F1 back to launcher · F9 screenshot)', '$1 est réservée (F1 retour au launcher · F9 capture)']],
+    [/^Los cambios se guardan solos y se aplican al iniciar el juego · (.+) para cambiar de pestaña\.$/,
+      ['Changes are saved automatically and applied when the game starts · $1 to switch tabs.', 'Les changements sont enregistrés tout seuls et appliqués au lancement du jeu · $1 pour changer d’onglet.']],
+    [/^Logro: (.+)$/, ['Achievement: $1', 'Succès : $1']],
+    [/^TORRE ([IVX]+)$/, ['TOWER $1', 'TOUR $1']],
+    [/^Torre ([IVX]+)$/, ['Tower $1', 'Tour $1']],
+    [/^Torre ([IVX]+) · derrota a su amo y entrega su carne a Elena\. Aún sin explorar\.$/,
+      ['Tower $1 · defeat its master and bring its flesh to Elena. Not explored yet.', 'Tour $1 · vaincs son maître et rapporte sa chair à Elena. Pas encore explorée.']],
+    [/^Torre ([IVX]+) · sin explorar$/, ['Tower $1 · unexplored', 'Tour $1 · inexplorée']],
+    [/^PULSA UNA TECLA O CLIC · (\d+)$/, ['PRESS A KEY OR CLICK · $1', 'APPUIE SUR UNE TOUCHE OU CLIQUE · $1']],
+    [/^PULSA UN BOTÓN · (\d+)$/, ['PRESS A BUTTON · $1', 'APPUIE SUR UN BOUTON · $1']],
+    [/^(JAPONÉS|INGLÉS) · (ESP|ENG|FRA)$/, null]   // placa de voces: se trata aparte
+  ];
+  const LIDX = () => (cfg.ui === 'en' ? 0 : cfg.ui === 'fr' ? 1 : -1);
+  const VOICE_W = { 'JAPONÉS': ['JAPANESE', 'JAPONAIS'], 'INGLÉS': ['ENGLISH', 'ANGLAIS'] }, TEXT_W = { ESP: ['SPA', 'ESP'], ENG: ['ENG', 'ANG'], FRA: ['FRE', 'FRA'] };
+  const trText = (s) => {
+    const i = LIDX(); if (i < 0 || !s) return s;
+    const key = s.trim(); if (!key) return s;
+    let out = null;
+    if (Object.prototype.hasOwnProperty.call(I18N, key)) out = I18N[key][i];
+    else for (const [rx, v] of I18N_RX) {
+      const m = rx.exec(key); if (!m) continue;
+      out = v ? v[i].replace(/\$(\d)/g, (_, n) => trText(m[+n])) : VOICE_W[m[1]][i] + ' · ' + TEXT_W[m[2]][i];
+      break;
+    }
+    return out == null ? s : s.replace(key, out);
+  };
+  const trRec = new WeakMap();   // nodo de texto -> { src: texto original en español, out: texto mostrado }
+  const trNode = (n) => {
+    let r = trRec.get(n);
+    if (!r || n.nodeValue !== r.out) r = { src: n.nodeValue };
+    r.out = trText(r.src); trRec.set(n, r);
+    if (n.nodeValue !== r.out) n.nodeValue = r.out;
+  };
+  const trTree = (root) => {
+    if (root.nodeType === 3) { trNode(root); return; }
+    if (root.nodeType !== 1 || root.tagName === 'SCRIPT' || root.tagName === 'STYLE') return;
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let n = w.nextNode(); n; n = w.nextNode()) trNode(n);
+    const els = root.querySelectorAll ? [root, ...root.querySelectorAll('[title]')] : [];
+    for (const el of els) { if (!el.getAttribute || !el.hasAttribute('title')) continue; if (!el.dataset.srcTitle) el.dataset.srcTitle = el.title; el.title = trText(el.dataset.srcTitle); }
+  };
+  const trAll = () => { document.documentElement.lang = cfg.ui || 'es'; trTree(document.body); };
+  new MutationObserver((ms) => {
+    for (const m of ms) {
+      if (m.type === 'characterData') trNode(m.target);
+      else m.addedNodes.forEach(trTree);
+    }
+  }).observe(document.body, { childList: true, subtree: true, characterData: true });
+  const save = () => { try { localStorage.setItem('pt_cfg', JSON.stringify(cfg)); } catch (e) {} if (api && api.saveConfig) api.saveConfig(cfg); };
+
+  /* ───── Escala del escenario ───── */
+  const fit = () => { const s = Math.min(innerWidth / 1280, innerHeight / 720); stage.style.transform = `scale(${s})`; };
+  addEventListener('resize', fit); fit();
+
+  /* ───── Sonido sintetizado (provisional hasta tener los SE del juego) ───── */
+  let ac = null;
+  const tone = (f, d, type = 'sine', v = .07, f2) => {
+    if (cfg.sfx !== 'on') return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime;
+      o.type = type; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + d);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + .008); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+      o.connect(g).connect(ac.destination); o.start(t); o.stop(t + d + .02);
+    } catch (e) {}
+  };
+  const clank = () => {
+    if (cfg.sfx !== 'on') return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      const t = ac.currentTime, n = ac.sampleRate * .12, b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 3);
+      const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+      s.buffer = b; f.type = 'bandpass'; f.frequency.value = 3200; f.Q.value = 4; g.gain.value = .22;
+      s.connect(f).connect(g).connect(ac.destination); s.start(t);
+    } catch (e) {}
+  };
+  const SYN = { move: () => tone(1320, .05, 'triangle', .05), ok: () => { clank(); tone(660, .18, 'sine', .06, 990); },
+    back: () => tone(520, .12, 'triangle', .05, 330), tick: () => tone(1800, .03, 'square', .02) };
+  // Sonidos sacados del juego (x3_base.csb): cursor, aceptar, cancelar, etc. Si faltan, se usan los sintetizados.
+  const SFXFILES = ['move', 'ok', 'back', 'tick', 'open', 'start', 'boo', 'page', 'gauge', 'tower'];
+  const SFX = {};
+  SFXFILES.forEach((k) => {
+    try { const a = new Audio('assets/sfx/' + k + '.ogg'); a.preload = 'auto'; a.addEventListener('error', () => { SFX[k] = null; }); SFX[k] = a; } catch (e) {}
+  });
+  const sfx = (k) => {
+    if (cfg.sfx !== 'on') return;
+    const a = SFX[k];
+    if (a) { try { const c = a.cloneNode(); c.volume = .8; const pr = c.play(); if (pr && pr.catch) pr.catch(() => {}); return; } catch (e) {} }
+    if (SYN[k]) SYN[k]();
+  };
+
+  /* ───── Música del menú (Catenae Fortunae · Dies Irae) ───── */
+  const music = new Audio('assets/music.mp3'); music.loop = true; music.preload = 'auto'; music.volume = 0;
+  const musicVol = () => Math.max(0, Math.min(100, +cfg.mvol || 0)) / 100 * .85;
+  let mFade = null, gameOn = false;
+  const fadeMusic = (to, ms, then) => {
+    clearInterval(mFade); const from = music.volume, t0 = performance.now();
+    mFade = setInterval(() => {
+      const k = Math.min(1, (performance.now() - t0) / ms); music.volume = Math.max(0, Math.min(1, from + (to - from) * k));
+      if (k >= 1) { clearInterval(mFade); mFade = null; if (then) then(); }
+    }, 40);
+  };
+  const syncMusic = () => {
+    if (cfg.music === 'on' && !gameOn && +cfg.mvol > 0) {
+      if (music.paused) { music.volume = 0; const pr = music.play(); if (pr && pr.catch) pr.catch(() => {}); }
+      fadeMusic(musicVol(), 1400);
+    } else if (!music.paused) fadeMusic(0, 700, () => music.pause());
+  };
+  // si el navegador bloquea el autoplay, arranca con la primera pulsación
+  const kick = () => { if (music.paused) syncMusic(); };
+  addEventListener('pointerdown', kick, { once: true }); addEventListener('keydown', kick, { once: true });
+
+
+  /* ───── Menú principal (estilo Dissidia 012) ───── */
+  const MENU = [
+    { id: 'play', t: 'Iniciar juego', d: 'Viaja a la Cicatriz y lucha contra la maldición de Elena.' },
+    { id: 'settings', t: 'Ajustes', d: 'Gráficos, sonido, controles e idioma del juego y del launcher.' },
+    { id: 'ach', t: 'Logros', d: 'Tu avance por las trece torres del Observatorio.' },
+    { id: 'credits', t: 'Créditos', d: 'Quién hizo posible este launcher.' },
+    { id: 'exit', t: 'Salir', d: 'Cerrar el launcher.' } ];
+
+  const menuEl = $('#menu'), cursor = $('#cursor'), descTxt = $('#descTxt');
+  let items = [], sel = 0, open = false, screen = 'menu';
+
+  const buildMenu = () => {
+    menuEl.innerHTML = ''; items = [];
+    MENU.forEach((m, i) => {
+      const el = document.createElement('div');
+      el.className = 'mi'; el.style.marginLeft = (i * 16) + 'px';
+      el.innerHTML = `<span class="bar"></span><span class="rule"></span><span class="t">${m.t}</span>`;
+      menuEl.appendChild(el); items.push({ el, m, sub: false });
+      if (m.sub) {
+        const wrap = document.createElement('div'); wrap.className = 'subwrap'; wrap.style.height = '0px';
+        m.sub.forEach((s) => {
+          const se = document.createElement('div');
+          se.className = 'mi sub'; se.style.marginLeft = (i * 16 + 120) + 'px';
+          se.innerHTML = `<span class="bar"></span><span class="rule"></span><span class="t">${s.t}</span><span class="k">${s.k}</span>`;
+          wrap.appendChild(se); items.push({ el: se, m: s, sub: true, parent: m });
+        });
+        menuEl.appendChild(wrap); m.wrap = wrap;
+      }
+    });
+    items.forEach((it, idx) => {
+      it.el.addEventListener('mouseenter', () => { if (screen === 'menu' && visible(idx) && (idx !== sel || zone !== 'menu')) { sel = idx; sfx('move'); if (zone !== 'menu') setZone('menu'); paint(); } });
+      it.el.addEventListener('click', () => { if (screen === 'menu' && visible(idx)) { sel = idx; paint(); activate(); } });
+    });
+    [...menuEl.querySelectorAll('.mi')].forEach((el, i) => { el.style.animationDelay = (i * 70) + 'ms'; el.querySelector('.rule').style.animationDelay = (120 + i * 70) + 'ms'; });
+  };
+  const visible = (i) => !items[i].sub || open;
+  let lastDesc = null;
+  const setDesc = (t) => {
+    if (lastDesc === t) return; lastDesc = t;
+    descTxt.classList.add('out');
+    setTimeout(() => { descTxt.textContent = t; descTxt.classList.remove('out'); }, 140);
+  };
+  const placeCursor = (snap) => {
+    const it = items[sel]; if (!it) return;
+    const r = it.el.getBoundingClientRect(), s = stage.getBoundingClientRect(), k = s.width / 1280;
+    const x = (r.left - s.left) / k - 92, y = (r.top - s.top) / k + (it.sub ? 7 : 12);
+    cursor.style.transform = `translate(${x}px, ${y}px)`;
+    cursor.classList.remove('hidden');
+    if (snap) { cursor.classList.remove('snap'); void cursor.offsetWidth; cursor.classList.add('snap'); }
+  };
+  const paint = (snap = true) => {
+    items.forEach((it, i) => { it.el.classList.toggle('on', i === sel && zone === 'menu'); it.el.classList.toggle('dim', open && !it.sub && it.m.id !== 'play'); });
+    if (zone !== 'menu') return;
+    setDesc(items[sel].m.d);
+    placeCursor(snap);
+  };
+  const toggleSub = (v) => {
+    const m = MENU[0]; if (!m.wrap) { open = false; return; } open = v;
+    m.wrap.style.height = v ? (m.sub.length * 44) + 'px' : '0px';
+    const start = performance.now();
+    const follow = () => { placeCursor(false); if (performance.now() - start < 420) requestAnimationFrame(follow); };
+    requestAnimationFrame(follow);
+  };
+  // zona de los iconos de abajo a la derecha (tema, pantalla completa, música)
+  let zone = 'menu', toolSel = 0;
+  const TOOLS = ['#bTheme', '#bFull', '#bMusic'];
+  const TOOLDESC = ['Cambiar el tema del launcher (Noche / Alba).', 'Pantalla completa o ventana.', 'Activar o silenciar la música del menú.'];
+  const paintTools = () => {
+    TOOLS.forEach((id, i) => $(id).classList.toggle('focus', zone === 'tools' && i === toolSel));
+    cursor.classList.toggle('hidden', zone === 'tools');
+    if (zone === 'tools') setDesc(TOOLDESC[toolSel]);
+  };
+  const setZone = (z) => { zone = z; paint(false); paintTools(); };
+  const move = (d) => {
+    if (d > 0 && !open && sel === items.length - 1) { sfx('move'); toolSel = 0; setZone('tools'); return; }   // bajar desde Salir -> iconos
+    let i = sel;
+    do { i = (i + d + items.length) % items.length; } while (!visible(i));
+    if (open && !items[i].sub) { if (items[i].m.id !== 'play') return; }
+    sel = i; sfx('move'); paint();
+  };
+  const activate = () => {
+    const it = items[sel];
+    if (it.m.id === 'play') {   // idioma de voces y textos: se elige en Ajustes → Idioma
+      const v = cfg.voice === 'en' ? 'en' : 'jp';
+      if (v === 'jp' && !hostState.gameJpOk) { sfx('boo'); toast('Falta la versión con voces japonesas (paso 2) · elige inglés en Ajustes → Idioma'); return; }
+      sfx('start'); paintVersion(); launch(v); return;
+    }
+    if (it.m.id === 'play_old') { sfx('ok'); toggleSub(true); sel = Math.max(0, items.findIndex((x) => x.sub && x.m.id === cfg.voice)); paint(); return; }
+    if (it.sub) { if (it.m.id === 'jp' && !hostState.gameJpOk) { sfx('boo'); toast('Falta la versión con voces japonesas (paso 2)'); return; } sfx('start'); cfg.voice = it.m.id; save(); paintVersion(); launch(it.m.id); return; }
+    if (it.m.id === 'exit') { sfx('ok'); ask(); return; }
+    sfx('open'); go(it.m.id);
+  };
+  const backMenu = () => {
+    if (open) { toggleSub(false); sel = 0; sfx('back'); paint(); return true; }
+    return false;
+  };
+
+  /* ───── Torres ───── */
+  const slots = $('#slots');
+  for (let i = 0; i < 13; i++) { const s = document.createElement('i'); s.className = 'slot' + (i === 12 ? ' big' : ''); slots.appendChild(s); }
+  setInterval(() => { if (cfg.anim !== 'on') return; const s = slots.children[Math.floor(Math.random() * 13)]; s.classList.remove('shine'); void s.offsetWidth; s.classList.add('shine'); }, 2600);
+
+  /* ───── Pantallas ───── */
+  const panels = { settings: $('#pSettings'), ach: $('#pAch'), credits: $('#pCredits') };
+  const go = (id) => {
+    screen = id;
+    menuEl.classList.add('away'); cursor.classList.add('hidden');
+    Object.entries(panels).forEach(([k, p]) => p.classList.toggle('show', k === id));
+    if (id === 'settings') { row = 0; ctlDev = inputDev; paintSettings(); }
+    if (id === 'ach') paintAch();
+    if (id === 'credits') { const c = $('#credits'); c.classList.remove('run'); void c.offsetWidth; c.classList.add('run'); setDesc('Gracias por jugar.'); }
+  };
+  const home = () => {
+    if (capture) { capture = null; clearInterval(startCapture._i); }
+    screen = 'menu'; Object.values(panels).forEach((p) => p.classList.remove('show'));
+    menuEl.classList.remove('away'); sfx('back');
+    if (zone !== 'menu') { zone = 'menu'; paintTools(); }
+    // el menú vuelve deslizándose: la cadena lo sigue hasta que termina (si no, queda encima del texto)
+    setTimeout(() => { paint(false); const t0 = performance.now(); const f = () => { if (screen !== 'menu') return; placeCursor(false); if (performance.now() - t0 < 600) requestAnimationFrame(f); }; f(); }, 30);
+  };
+  document.querySelectorAll('[data-back]').forEach((b) => b.addEventListener('click', home));
+  document.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => { if (screen !== 'menu') home(); else { sfx('ok'); go(b.dataset.go); } }));
+
+
+  /* ───── Controles personalizables (como en The Last Story) ───── */
+  // acciones del Mando Clásico de Wii que usa el juego
+  const ACTS = {
+    ls_up: { n: 'AVANZAR' }, ls_down: { n: 'RETROCEDER' }, ls_left: { n: 'IZQUIERDA' }, ls_right: { n: 'DERECHA' },
+    rs_up: { n: 'CÁMARA ARRIBA' }, rs_down: { n: 'CÁMARA ABAJO' }, rs_left: { n: 'CÁMARA IZQ.' }, rs_right: { n: 'CÁMARA DER.' },
+    a: { n: 'BOTÓN a', h: 'Aceptar · acción' }, b: { n: 'BOTÓN b', h: 'Cancelar · volver' }, x: { n: 'BOTÓN x' }, y: { n: 'BOTÓN y' },
+    zl: { n: 'BOTÓN ZL' }, zr: { n: 'BOTÓN ZR' }, l: { n: 'GATILLO L' }, r: { n: 'GATILLO R' },
+    plus: { n: 'BOTÓN +', h: 'Menú · pausa' }, minus: { n: 'BOTÓN −' },
+    du: { n: 'CRUCETA ↑' }, dd: { n: 'CRUCETA ↓' }, dl: { n: 'CRUCETA ←' }, dr: { n: 'CRUCETA →' }
+  };
+  const BTN_IDS = ['a', 'b', 'x', 'y', 'zl', 'zr', 'l', 'r', 'plus', 'minus', 'du', 'dd', 'dl', 'dr'];
+  // posición de Nintendo: a = derecha (B de Xbox), b = abajo (A), x = arriba (Y), y = izquierda (X)
+  const PAD_DEF = { a: 'Button B', b: 'Button A', x: 'Button Y', y: 'Button X', zl: 'Shoulder L', zr: 'Shoulder R', l: 'Trigger L', r: 'Trigger R',
+    plus: 'Start', minus: 'Back', du: 'Pad N', dd: 'Pad S', dl: 'Pad W', dr: 'Pad E' };
+  const KB_DEF = { ls_up: 'W', ls_down: 'S', ls_left: 'A', ls_right: 'D', rs_up: 'I', rs_down: 'K', rs_left: 'J', rs_right: 'L',
+    a: 'Click 0', b: 'SPACE', x: 'E', y: 'Q', zl: 'LCONTROL', zr: 'Click 1', l: 'LSHIFT', r: 'F', plus: 'ESCAPE', minus: 'TAB',
+    du: 'UP', dd: 'DOWN', dl: 'LEFT', dr: 'RIGHT' };
+  const RESERVED = ['F1', 'F9'];   // F1 = volver al launcher · F9 = captura
+  const binds = () => {
+    cfg.padBinds = Object.assign({}, PAD_DEF, cfg.padBinds || {});
+    cfg.kbBinds = Object.assign({}, KB_DEF, cfg.kbBinds || {});
+    for (const k in cfg.kbBinds) if (RESERVED.includes(cfg.kbBinds[k])) cfg.kbBinds[k] = '';
+    return { pad: cfg.padBinds, kb: cfg.kbBinds };
+  };
+  // Gamepad API estándar -> nombres XInput de Dolphin
+  const PAD_IDX = ['Button A', 'Button B', 'Button X', 'Button Y', 'Shoulder L', 'Shoulder R', 'Trigger L', 'Trigger R', 'Back', 'Start', 'Thumb L', 'Thumb R', 'Pad N', 'Pad S', 'Pad W', 'Pad E'];
+  const PAD_SHOW = { 'Button A': 'A', 'Button B': 'B', 'Button X': 'X', 'Button Y': 'Y', 'Shoulder L': 'LB', 'Shoulder R': 'RB', 'Trigger L': 'LT', 'Trigger R': 'RT',
+    Back: 'VIEW', Start: 'MENU', 'Thumb L': 'L3', 'Thumb R': 'R3', 'Pad N': 'CRUCETA ↑', 'Pad S': 'CRUCETA ↓', 'Pad W': 'CRUCETA ←', 'Pad E': 'CRUCETA →' };
+  const GLY = { 'Button A': 'A', 'Button B': 'B', 'Button X': 'X', 'Button Y': 'Y', 'Shoulder L': 'LB', 'Shoulder R': 'RB', 'Trigger L': 'LT', 'Trigger R': 'RT',
+    Back: 'BACK', Start: 'START', 'Thumb L': 'L3', 'Thumb R': 'R3', 'Pad N': 'PAD_N', 'Pad S': 'PAD_S', 'Pad W': 'PAD_W', 'Pad E': 'PAD_E' };
+  const CODE2DI = (code) => {
+    let m;
+    if ((m = /^Key([A-Z])$/.exec(code))) return m[1];
+    if ((m = /^Digit(\d)$/.exec(code))) return m[1];
+    if ((m = /^F(\d{1,2})$/.exec(code))) return 'F' + m[1];
+    if ((m = /^Numpad(\d)$/.exec(code))) return 'NUMPAD' + m[1];
+    return ({ Space: 'SPACE', ShiftLeft: 'LSHIFT', ShiftRight: 'RSHIFT', ControlLeft: 'LCONTROL', ControlRight: 'RCONTROL', AltLeft: 'LMENU', AltRight: 'RMENU',
+      Enter: 'RETURN', NumpadEnter: 'NUMPADENTER', Escape: 'ESCAPE', Tab: 'TAB', Backspace: 'BACK', CapsLock: 'CAPITAL', ArrowUp: 'UP', ArrowDown: 'DOWN',
+      ArrowLeft: 'LEFT', ArrowRight: 'RIGHT', Minus: 'MINUS', Equal: 'EQUALS', BracketLeft: 'LBRACKET', BracketRight: 'RBRACKET', Semicolon: 'SEMICOLON',
+      Quote: 'APOSTROPHE', Backquote: 'GRAVE', Backslash: 'BACKSLASH', IntlBackslash: 'OEM_102', Comma: 'COMMA', Period: 'PERIOD', Slash: 'SLASH',
+      Insert: 'INSERT', Delete: 'DELETE', Home: 'HOME', End: 'END', PageUp: 'PRIOR', PageDown: 'NEXT', NumpadAdd: 'ADD', NumpadSubtract: 'SUBTRACT',
+      NumpadMultiply: 'MULTIPLY', NumpadDivide: 'DIVIDE', NumpadDecimal: 'DECIMAL' })[code] || null;
+  };
+  const KB_SHOW = { SPACE: 'ESPACIO', LSHIFT: 'SHIFT', RSHIFT: 'SHIFT DER.', LCONTROL: 'CTRL', RCONTROL: 'CTRL DER.', LMENU: 'ALT', RMENU: 'ALT GR',
+    RETURN: 'ENTER', NUMPADENTER: 'ENTER NUM', ESCAPE: 'ESC', TAB: 'TAB', BACK: '⌫', CAPITAL: 'BLOQ MAYÚS', UP: '↑', DOWN: '↓', LEFT: '←', RIGHT: '→',
+    MINUS: '-', EQUALS: '=', LBRACKET: '[', RBRACKET: ']', SEMICOLON: 'Ñ', APOSTROPHE: "'", GRAVE: 'º', BACKSLASH: '\\', OEM_102: '<', COMMA: ',', PERIOD: '.',
+    SLASH: '/', INSERT: 'INS', DELETE: 'SUPR', HOME: 'INICIO', END: 'FIN', PRIOR: 'RE PÁG', NEXT: 'AV PÁG', ADD: 'NUM +', SUBTRACT: 'NUM -', MULTIPLY: 'NUM *',
+    DIVIDE: 'NUM /', DECIMAL: 'NUM .', 'Click 0': 'CLIC IZQ.', 'Click 1': 'CLIC DER.', 'Click 2': 'CLIC RUEDA', 'Click 3': 'LATERAL 1', 'Click 4': 'LATERAL 2',
+    'Axis Z+': 'RUEDA ↑', 'Axis Z-': 'RUEDA ↓' };
+  const kbLabel = (v) => KB_SHOW[v] || (/^NUMPAD(\d)$/.test(v) ? 'NUM ' + v.slice(6) : v);
+  const showBind = (dev, v) => !v ? '—' : dev === 'pad' ? (PAD_SHOW[v] || v) : kbLabel(v);
+  const bindHTML = (dev, v) => !v ? '—' : dev === 'pad' && GLY[v] ? `<img src="assets/glifos/${GLY[v]}.png" alt="">${PAD_SHOW[v]}` : showBind(dev, v);
+  const actName = (id) => ACTS[id].n;
+
+  let ctlDev = 'pad', capture = null, capEnd = 0;   // capture = { dev, act, until }
+  const startCapture = (dev, act) => {
+    capture = { dev, act, until: performance.now() + 5000 }; sfx('ok'); paintSettings(true);
+    clearInterval(startCapture._i);
+    startCapture._i = setInterval(() => {
+      if (!capture) { clearInterval(startCapture._i); return; }
+      if (performance.now() > capture.until) { capture = null; capEnd = performance.now(); sfx('back'); paintSettings(true); return; }
+      const b = rowsEl.querySelector('.bind.live'); if (b) b.textContent = liveText();
+    }, 200);
+  };
+  const liveText = () => (capture.dev === 'kb' ? 'PULSA UNA TECLA O CLIC' : 'PULSA UN BOTÓN') + ' · ' + Math.max(1, Math.ceil((capture.until - performance.now()) / 1000));
+  const finishCapture = (value) => {
+    const { dev, act } = capture; capture = null; capEnd = performance.now(); clearInterval(startCapture._i);
+    if (value == null) { sfx('back'); paintSettings(true); return; }
+    if (dev === 'kb' && RESERVED.includes(value)) { toast(value + ' está reservada (F1 volver al launcher · F9 captura)'); sfx('boo'); paintSettings(true); return; }
+    const B = binds()[dev];
+    const other = Object.keys(B).find((k) => k !== act && B[k] === value);
+    if (other) { B[other] = B[act]; toast('Intercambiado con ' + actName(other)); }
+    B[act] = value; save(); sfx('tick'); paintSettings(true);
+  };
+  addEventListener('keydown', (e) => {
+    if (!capture) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    if (e.repeat) return;
+    if (capture.dev === 'pad') { if (e.key === 'Escape') finishCapture(null); return; }
+    const v = CODE2DI(e.code); if (v) finishCapture(v);
+  }, true);
+  addEventListener('mousedown', (e) => {
+    if (!capture || capture.dev !== 'kb') return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    finishCapture('Click ' + ({ 0: 0, 2: 1, 1: 2, 3: 3, 4: 4 })[e.button]);
+  }, true);
+  addEventListener('wheel', (e) => { if (!capture || capture.dev !== 'kb') return; e.preventDefault(); finishCapture(e.deltaY < 0 ? 'Axis Z+' : 'Axis Z-'); }, { capture: true, passive: false });
+  addEventListener('contextmenu', (e) => e.preventDefault());
+
+  const ctlRows = () => {
+    const R = [];
+    R.push({ tab: 'ctl', group: 'DISPOSITIVO', type: 'opts', label: 'EDITAR', hint: 'Mando y teclado funcionan a la vez',
+      get: () => ctlDev, set: (v) => { ctlDev = v; }, opts: [['pad', 'Mando'], ['kb', 'Teclado y ratón']] });
+    R.push({ tab: 'ctl', key: 'buttons', label: 'ICONOS', hint: 'Botones que muestra el juego', opts: [['auto', 'Auto'], ['xbox', 'Xbox'], ['kb', 'Teclado'], ['wii', 'Wii']] });
+    R.push({ tab: 'ctl', key: 'autoControls', label: 'CONTROLES AUTOMÁTICOS', hint: 'No = conserva lo que configures a mano en Dolphin',
+      opts: [['on', 'Sí'], ['off', 'No (Dolphin)']] });
+    const bind = (id, group) => R.push({ tab: 'ctl', type: 'bind', dev: ctlDev, act: id, group, label: ACTS[id].n,
+      hint: ACTS[id].h || ('Por defecto: ' + showBind(ctlDev, (ctlDev === 'kb' ? KB_DEF : PAD_DEF)[id])) });
+    if (ctlDev === 'kb') {
+      ['ls_up', 'ls_down', 'ls_left', 'ls_right'].forEach((id, i) => bind(id, i ? null : 'MOVIMIENTO'));
+      R.push({ tab: 'ctl', group: 'CÁMARA', key: 'kbCam', label: 'CÁMARA', hint: 'Cómo mueves la cámara', opts: [['mouse', 'Ratón'], ['keys', 'Teclas']] });
+      if (cfg.kbCam === 'keys') ['rs_up', 'rs_down', 'rs_left', 'rs_right'].forEach((id) => bind(id));
+      else {
+        R.push({ tab: 'ctl', key: 'sens', type: 'slider', label: 'SENSIBILIDAD', hint: 'Velocidad del ratón' });
+        R.push({ tab: 'ctl', key: 'invert', label: 'INVERTIR Y', hint: 'Eje vertical del ratón', opts: [['off', 'No'], ['on', 'Sí']] });
+      }
+      BTN_IDS.forEach((id, i) => bind(id, i ? null : 'BOTONES'));
+      R.push({ tab: 'ctl', group: 'OTROS', type: 'info', label: 'VOLVER AL LAUNCHER', hint: 'Mientras juegas', text: 'F1' });
+    } else {
+      BTN_IDS.forEach((id, i) => bind(id, i ? null : 'BOTONES'));
+      R.push({ tab: 'ctl', group: 'CÁMARA', key: 'padInvert', label: 'INVERTIR Y', hint: 'Eje vertical del stick derecho', opts: [['off', 'No'], ['on', 'Sí']] });
+      R.push({ tab: 'ctl', group: 'OTROS', type: 'info', label: 'VOLVER AL LAUNCHER', hint: 'Mientras juegas', text: 'L3 + R3' });
+    }
+    R.push({ tab: 'ctl', type: 'action', label: 'RESTABLECER', hint: 'Controles por defecto de este dispositivo', btn: 'RESTABLECER',
+      run: () => {
+        if (ctlDev === 'kb') { cfg.kbBinds = Object.assign({}, KB_DEF); cfg.kbCam = 'mouse'; cfg.invert = 'off'; }
+        else { cfg.padBinds = Object.assign({}, PAD_DEF); cfg.padInvert = 'off'; }
+        save(); sfx('ok'); toast('Controles restablecidos'); paintSettings(true);
+      } });
+    return R;
+  };
+
+  /* ───── Iconos del juego dibujados con los controles elegidos ───── */
+  const TEXLIST = [
+    ['e59a1cd4ae9f8060', 32, 32, 'a', 5], ['593b78aa86a840f7', 40, 40, 'a_small', 5], ['99648920b4fc6e5f', 40, 40, 'a_glow', 5],
+    ['a882eca78a844d4d', 32, 32, 'b', 5], ['7f85bffeb65cf7ca', 32, 32, 'x', 5], ['a3205164ffed501b', 32, 32, 'y', 5],
+    ['870590f766458d4e', 40, 32, 'L', 5], ['6f870279459f5309', 40, 32, 'R', 5], ['2e626c3c4f3cf521', 40, 32, 'ZL', 5], ['d89983e0b4970dc5', 40, 32, 'ZR', 5],
+    ['c90ec6ab6a100a5d', 32, 32, 'plus', 5], ['200d0526fbaeab3b', 32, 32, 'minus', 5],
+    ['8ddd02a5974f2acc', 32, 32, 'dpad', 5], ['8eeff7ed5cbe56e0', 32, 32, 'dpad_l', 5], ['e0118c7069ca823e', 32, 32, 'dpad_r', 5],
+    ['53b242787f0f880e', 32, 32, 'dpad_lr', 5], ['cfdbd9603fdb89d7', 32, 32, 'dpad_ud', 5],
+    ['101a5cb065c4c896', 40, 32, 'ls', 5], ['a35f3af38a6585d3', 40, 32, 'rs', 5], ['639eec21a6e2c7ee', 40, 32, 'ls', 5],
+    ['aa03bb6500e74b78', 40, 32, 'ls_lr', 5], ['2da7803e9abd4a4c', 40, 40, 'ls_ud', 5], ['9e7b65e4e7a1d98a', 48, 40, 'ls_glow1', 5], ['19ba798b20519832', 48, 40, 'ls_glow2', 5],
+    ['7d553e2033a9747c', 48, 48, 'coin', 14], ['971392a882be0510', 48, 48, 'coin_on', 14], ['a6448a23aee09961', 48, 48, 'coin', 14], ['431c601df41c65b7', 48, 48, 'coin_on', 14],
+    ['0803f454bfa1d21e', 256, 32, 'press_en', 5], ['9bfdd38a8869066d', 256, 32, 'press_en', 5], ['48dc6d46532971fa', 256, 32, 'press_es', 5], ['d67b89775ce34960', 256, 32, 'press_es', 5]
+  ];
+  const ROLE_ACT = { a: 'a', a_small: 'a', a_glow: 'a', coin: 'a', coin_on: 'a', press_en: 'a', press_es: 'a', b: 'b', x: 'x', y: 'y',
+    L: 'l', R: 'r', ZL: 'zl', ZR: 'zr', plus: 'plus', minus: 'minus' };
+  const MOUSEG = { 'Click 0': 'M_L', 'Click 1': 'M_R', 'Click 2': 'M_M', 'Click 3': 'M_M', 'Click 4': 'M_M', 'Axis Z+': 'M_M', 'Axis Z-': 'M_M' };
+  const imgCache = {};
+  const loadImg = (src) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; });
+  const glyph = async (n) => imgCache[n] || (imgCache[n] = await loadImg('assets/glifos/' + n + '.png'));
+  const newCv = (w, h) => { const c = document.createElement('canvas'); c.width = Math.round(w); c.height = Math.round(h); return c; };
+  const fitDraw = (g, src, W, H, sc) => {
+    if (!src) return; const k = Math.min(W * sc / src.width, H * sc / src.height), w = src.width * k, h = src.height * k;
+    g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high'; g.drawImage(src, (W - w) / 2, (H - h) / 2, w, h);
+  };
+  const glowFit = (g, src, W, H, sc, st = 1) => {
+    const t = newCv(W, H); fitDraw(t.getContext('2d'), src, W, H, sc);
+    g.save(); g.shadowColor = 'rgba(236,120,40,' + Math.min(1, .95 * st) + ')'; g.shadowBlur = Math.min(W, H) * .16;
+    g.drawImage(t, 0, 0); if (st >= 1) g.drawImage(t, 0, 0); g.restore(); g.drawImage(t, 0, 0);
+  };
+  // tecla oscura (mismo estilo que el paquete de teclado)
+  const keycap = (label, W, H) => {
+    const c = newCv(W, H), g = c.getContext('2d'), m = Math.min(W, H);
+    const rr = (x, y, w, h, r) => { g.beginPath(); g.roundRect(x, y, w, h, Math.max(0, r)); };
+    g.save(); g.shadowColor = 'rgba(0,0,0,.5)'; g.shadowBlur = W * .03; g.shadowOffsetY = H * .03;
+    g.fillStyle = '#0c0c0e'; rr(W * .07, H * .07, W * .86, H * .86, m * .16); g.fill(); g.restore();
+    const e = m * .022; g.fillStyle = 'rgb(40,41,46)'; rr(W * .07 + e, H * .07 + e, W * .86 - 2 * e, H * .86 - 2 * e, m * .16 - e); g.fill();
+    const gr = g.createRadialGradient(W * .4, H * .2, 0, W * .4, H * .2, Math.max(W, H) * .9);
+    gr.addColorStop(0, 'rgb(92,94,102)'); gr.addColorStop(1, 'rgb(44,45,50)');
+    g.fillStyle = gr; rr(W * .15, H * .12, W * .7, H * .64, m * .12); g.fill();
+    const n = [...label].length; let fs = n === 1 ? m * .42 : n <= 3 ? H * .30 : H * .24;
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    do { g.font = '800 ' + Math.round(fs) + 'px "PT Inter","Segoe UI",Arial,sans-serif'; if (g.measureText(label).width <= W * .64) break; fs -= 2; } while (fs > 8);
+    g.fillStyle = 'rgba(0,0,0,.63)'; g.fillText(label, W / 2, H * .44 + W * .012);
+    g.fillStyle = 'rgb(240,240,240)'; g.fillText(label, W / 2, H * .44);
+    return c;
+  };
+  const valueImg = async (dev, v) => {
+    if (dev === 'pad') return v && GLY[v] ? glyph(GLY[v]) : null;
+    if (!v) return null;
+    if (MOUSEG[v]) return glyph(MOUSEG[v]);
+    const lab = kbLabel(v), n = [...lab].length;
+    return n <= 3 ? keycap(lab, 384, 384) : keycap(lab, n <= 5 ? 512 : 640, 320);
+  };
+  // grupo de 4 teclas en cruz (WASD / flechas)
+  const cluster = async (vals, hi) => {
+    const W = 480, H = 384, k = H / 2, c = newCv(W, H), g = c.getContext('2d');
+    const pos = { u: [(W - k) / 2, 0], l: [(W - k) / 2 - k, H - k], d: [(W - k) / 2, H - k], r: [(W - k) / 2 + k, H - k] };
+    for (const ch of ['u', 'l', 'd', 'r']) {
+      const v = vals[ch]; const src = !v ? null : MOUSEG[v] ? await glyph(MOUSEG[v]) : keycap(kbLabel(v), k, k);
+      g.save(); g.globalAlpha = hi && !hi.includes(ch) ? .45 : 1; g.translate(pos[ch][0], pos[ch][1]); fitDraw(g, src, k, k, 1); g.restore();
+    }
+    return c;
+  };
+  const pressImg = async (word, icon, W, H) => {
+    const c = newCv(W, H), g = c.getContext('2d');
+    try { await document.fonts.load('800 ' + H + 'px "PT Cinzel"'); } catch (e) {}
+    g.font = '800 ' + H + 'px "PT Cinzel",Georgia,serif'; g.textBaseline = 'alphabetic';
+    const mt = g.measureText(word), tw = mt.width, ih = H * 1.08;
+    const iw = icon ? icon.width * Math.min(ih / icon.height, ih / icon.width) : 0, gap = H * .25, x0 = (W - (tw + gap + iw)) / 2;
+    const y = (H - (mt.actualBoundingBoxAscent + mt.actualBoundingBoxDescent)) / 2 + mt.actualBoundingBoxAscent;
+    g.lineJoin = 'round'; g.lineWidth = H / 16; g.strokeStyle = 'rgb(30,26,22)'; g.strokeText(word, x0, y);
+    g.fillStyle = 'rgb(242,238,228)'; g.fillText(word, x0, y);
+    if (icon) { g.save(); g.translate(x0 + tw + gap, (H - ih) / 2); fitDraw(g, icon, iw, ih, 1); g.restore(); }
+    return c;
+  };
+  const sameAs = (a, d) => Object.keys(d).every((k) => a[k] === d[k]);
+  const iconSet = () => cfg.buttons === 'auto' ? (inputDev === 'kb' ? 'kb' : 'xbox') : cfg.buttons;
+  const makeTextures = async (set) => {
+    const B = binds(), dev = set === 'kb' ? 'kb' : 'pad', K = B[dev];
+    if (set === 'xbox' && sameAs(K, PAD_DEF)) return null;            // por defecto: paquete fijo
+    if (set === 'kb' && sameAs(K, KB_DEF) && cfg.kbCam !== 'keys') return null;
+    if (set !== 'kb' && set !== 'xbox') return null;
+    const out = {};
+    for (const [hash, w, h, role, fmt] of TEXLIST) {
+      const act = ROLE_ACT[role];
+      if (!act && dev === 'pad') continue;                                // palancas y cruceta del mando no cambian
+      const sc = w >= 256 ? 4 : 6, W = w * sc, H = h * sc, c = newCv(W, H), g = c.getContext('2d');
+      if (act) {
+        const src = await valueImg(dev, K[act]);
+        if (role === 'a_small') fitDraw(g, src, W, H, .8);
+        else if (role === 'a_glow') glowFit(g, src, W, H, .8);
+        else if (role === 'coin') fitDraw(g, src, W, H, .9);
+        else if (role === 'coin_on') glowFit(g, src, W, H, .82);
+        else if (role === 'press_en' || role === 'press_es') g.drawImage(await pressImg(role === 'press_en' ? 'PRESS' : 'PULSA', src, W, H), 0, 0);
+        else fitDraw(g, src, W, H, (role === 'L' || role === 'R') && dev === 'pad' ? 1 : .98);
+      } else if (role.startsWith('dpad')) {
+        const hi = { dpad: '', dpad_l: 'l', dpad_r: 'r', dpad_lr: 'lr', dpad_ud: 'ud' }[role];
+        fitDraw(g, await cluster({ u: K.du, d: K.dd, l: K.dl, r: K.dr }, hi), W, H, .98);
+      } else if (role === 'rs') {
+        fitDraw(g, cfg.kbCam === 'keys' ? await cluster({ u: K.rs_up, d: K.rs_down, l: K.rs_left, r: K.rs_right }, '') : await glyph('M_MOVE'), W, H, .98);
+      } else {
+        const hi = { ls: 'udlr', ls_lr: 'lr', ls_ud: 'ud', ls_glow1: 'lr', ls_glow2: 'lr' }[role];
+        const cl = await cluster({ u: K.ls_up, d: K.ls_down, l: K.ls_left, r: K.ls_right }, hi);
+        if (role === 'ls_glow1') glowFit(g, cl, W, H, .85, .6); else if (role === 'ls_glow2') glowFit(g, cl, W, H, .85, 1); else fitDraw(g, cl, W, H, .98);
+      }
+      out['tex1_' + w + 'x' + h + '_' + hash + '_' + fmt + '.png'] = c.toDataURL('image/png');
+    }
+    return out;
+  };
+
+  /* ───── Ajustes ───── */
+  const YN = [['on', 'Sí'], ['off', 'No']];
+  const TABS = [['sound', 'SONIDO'], ['gfx', 'GRÁFICOS'], ['ctl', 'CONTROLES'], ['lang', 'IDIOMA'], ['general', 'GENERAL']];
+  const ROWS = [
+    { tab: 'sound', group: 'LAUNCHER', key: 'music', label: 'MÚSICA', hint: 'Tema del launcher', opts: YN },
+    { tab: 'sound', key: 'mvol', type: 'slider', label: 'VOLUMEN MÚSICA', hint: 'Solo en el launcher' },
+    { tab: 'sound', key: 'sfx', label: 'EFECTOS', hint: 'Sonidos del menú', opts: YN },
+    { tab: 'sound', group: 'JUEGO', key: 'gvol', type: 'slider', label: 'VOLUMEN', hint: 'Volumen general del juego' },
+    { tab: 'gfx', group: 'IMAGEN', key: 'res', label: 'RESOLUCIÓN', hint: 'Render interno', opts: [['720', '720p'], ['1080', '1080p'], ['1440', '1440p'], ['2160', '4K']] },
+    { tab: 'gfx', key: 'mode', label: 'PANTALLA', hint: 'Modo de la ventana', opts: [['full', 'Completa'], ['border', 'Sin bordes'], ['win', 'Ventana']] },
+    { tab: 'gfx', key: 'aspect', label: 'PROPORCIÓN', hint: 'Relación de aspecto', opts: [['169', '16:9'], ['43', '4:3'], ['auto', 'Auto']] },
+    { tab: 'gfx', key: 'vsync', label: 'V-SYNC', hint: 'Evita cortes de imagen', opts: YN },
+    { tab: 'gfx', group: 'CALIDAD', key: 'hd', label: 'TEXTURAS HD', hint: 'Paquete SX3EXJ', opts: [['on', 'Activadas'], ['off', 'Originales']] },
+    { tab: 'gfx', key: 'aa', label: 'ANTIALIASING', hint: 'Suaviza los bordes', opts: [['1', 'No'], ['2', '2×'], ['4', '4×'], ['8', '8×']] },
+    { tab: 'gfx', key: 'af', label: 'FILTRADO', hint: 'Nitidez de texturas lejanas', opts: [['1', '1×'], ['4', '4×'], ['16', '16×']] },
+    { tab: 'lang', group: 'JUEGO', key: 'voice', label: 'VOCES', hint: 'Doblaje del juego', opts: [['jp', 'Japonés'], ['en', 'Inglés']] },
+    { tab: 'lang', key: 'text', label: 'TEXTOS', hint: 'Menús y subtítulos', opts: [['es', 'Español'], ['en', 'English'], ['fr', 'Français']] },
+    { tab: 'lang', group: 'LAUNCHER', key: 'ui', label: 'IDIOMA', hint: 'Idioma de este menú', opts: [['es', 'Español'], ['en', 'English'], ['fr', 'Français']] },
+    { tab: 'general', group: 'PRESENTACIÓN', key: 'intro', label: 'INTRO', hint: 'Animación al abrir', opts: YN },
+    { tab: 'general', key: 'achToast', label: 'AVISO DE LOGROS', hint: 'Aviso dentro del juego al conseguir un logro', opts: YN },
+    { tab: 'general', key: 'anim', label: 'ANIMACIONES', hint: 'Movimiento del fondo y niebla', opts: YN },
+    { tab: 'general', key: 'particles', label: 'PÉTALOS', hint: 'Partículas flotando', opts: YN },
+    { tab: 'general', key: 'theme', label: 'TEMA', hint: 'Estilo del launcher', opts: [['noche', 'Noche'], ['alba', 'Alba']] },
+  ];
+  let tab = 'sound', row = 0;
+  const tabsEl = $('#tabs'), rowsEl = $('#rows');
+  const tabRows = () => tab === 'ctl' ? ctlRows() : ROWS.filter((r) => r.tab === tab);
+  const noteTxt = () => { const n = $('#pnote'); if (n) n.textContent = 'Los cambios se guardan solos y se aplican al iniciar el juego · ' + (inputDev === 'kb' ? 'Q / E' : 'LB / RB') + ' para cambiar de pestaña.'; };
+  const paintSettings = (still) => {
+    const keepScroll = still ? rowsEl.scrollTop : 0;
+    rowsEl.classList.toggle('still', !!still); noteTxt();
+    tabsEl.innerHTML = '<span class="tabkey">LB</span>';
+    TABS.forEach(([id, label]) => {
+      const b = document.createElement('button'); b.className = 'tab' + (id === tab ? ' on' : '');
+      b.innerHTML = label + '<span class="lb"></span>';
+      b.onclick = () => { if (capture) return; tab = id; row = 0; sfx('page'); paintSettings(); };
+      tabsEl.appendChild(b);
+    });
+    tabsEl.insertAdjacentHTML('beforeend', '<span class="tabkey">RB</span>');
+    rowsEl.innerHTML = '';
+    tabRows().forEach((r, i) => {
+      if (r.group) rowsEl.insertAdjacentHTML('beforeend', `<div class="grp">${r.group}</div>`);
+      const el = document.createElement('div'); el.className = 'row' + (i === row ? ' sel' : ''); el.style.animationDelay = (i * 35) + 'ms';
+      el.innerHTML = `<div class="lab"><b>${r.label}</b><i>${r.hint}</i></div>`;
+      if (r.type === 'info') {
+        el.insertAdjacentHTML('beforeend', `<div class="info">${r.text}</div>`);
+      } else if (r.type === 'bind') {
+        const live = capture && capture.dev === r.dev && capture.act === r.act, v = binds()[r.dev][r.act];
+        el.insertAdjacentHTML('beforeend', `<button class="bind${live ? ' live' : ''}${v ? '' : ' none'}">${live ? liveText() : bindHTML(r.dev, v)}</button>`);
+        el.querySelector('.bind').onclick = (e) => { e.stopPropagation(); if (capture || performance.now() - capEnd < 450) return; row = i; startCapture(r.dev, r.act); };
+      } else if (r.type === 'action') {
+        el.insertAdjacentHTML('beforeend', `<button class="pbtn">${r.btn}</button>`);
+        el.querySelector('.pbtn').onclick = () => { if (!capture) r.run(); };
+      } else if (r.type === 'slider') {
+        const v = cfg[r.key];
+        el.insertAdjacentHTML('beforeend', `<div class="slider"><div class="track"><div class="fill" style="width:${v}%"></div><div class="knob" style="left:${v}%"></div></div><span class="pct">${v}%</span></div>`);
+        const tr = el.querySelector('.track');
+        const setFrom = (e) => { const b = tr.getBoundingClientRect(); cfg[r.key] = Math.round(Math.max(0, Math.min(1, (e.clientX - b.left) / b.width)) * 20) * 5; apply(r.key); save(); repaintRow(el, r); };
+        tr.addEventListener('mousedown', (e) => { setFrom(e); const mv = (ev) => setFrom(ev); addEventListener('mousemove', mv); addEventListener('mouseup', () => removeEventListener('mousemove', mv), { once: true }); });
+      } else {
+        const o = document.createElement('div'); o.className = 'opts';
+        r.opts.forEach(([v, t]) => {
+          const cur = r.get ? r.get() : cfg[r.key];
+          const b = document.createElement('button'); b.className = 'opt' + (cur === v ? ' on' : ''); b.textContent = t;
+          b.onclick = () => { if (capture) return; if (r.set) r.set(v); else { cfg[r.key] = v; apply(r.key); save(); } sfx('tick'); paintSettings(true); };
+          o.appendChild(b);
+        });
+        el.appendChild(o);
+      }
+      el.addEventListener('mouseenter', () => { if (capture) return; row = i; markRow(); });
+      rowsEl.appendChild(el);
+    });
+    if (still) rowsEl.scrollTop = keepScroll;
+    markRow();
+  };
+  const repaintRow = (el, r) => { const v = cfg[r.key]; el.querySelector('.fill').style.width = v + '%'; el.querySelector('.knob').style.left = v + '%'; el.querySelector('.pct').textContent = v + '%'; };
+  // desplaza solo la lista (scrollIntoView movía también el escenario entero)
+  const showRow = (el) => {
+    const k = stage.getBoundingClientRect().width / 1280 || 1, a = rowsEl.getBoundingClientRect(), r = el.getBoundingClientRect();
+    const prev = el.previousElementSibling, top = prev && prev.classList.contains('grp') ? prev.getBoundingClientRect().top : r.top;
+    if (top < a.top) rowsEl.scrollTop -= (a.top - top) / k + 2; else if (r.bottom > a.bottom) rowsEl.scrollTop += (r.bottom - a.bottom) / k + 2;
+  };
+  const markRow = () => {
+    const els = rowsEl.querySelectorAll('.row'); els.forEach((e, i) => e.classList.toggle('sel', i === row));
+    if (els[row]) { showRow(els[row]); const r = tabRows()[row]; if (r) setDesc(r.hint); }
+  };
+  const stepRow = (d) => {
+    const r = tabRows()[row];
+    if (!r || r.type === 'info' || r.type === 'bind' || r.type === 'action') return;
+    if (r.get) { const i = r.opts.findIndex((o) => o[0] === r.get()); r.set(r.opts[(i + d + r.opts.length) % r.opts.length][0]); sfx('tick'); paintSettings(true); return; }
+    if (r.type === 'slider') { cfg[r.key] = Math.max(0, Math.min(100, cfg[r.key] + d * 5)); sfx('tick'); apply(r.key); save(); repaintRow(rowsEl.querySelectorAll('.row')[row], r); return; }
+    const i = r.opts.findIndex((o) => o[0] === cfg[r.key]);
+    cfg[r.key] = r.opts[(i + d + r.opts.length) % r.opts.length][0]; sfx('tick'); apply(r.key); save(); paintSettings(true);
+  };
+  const okRow = () => {
+    const r = tabRows()[row]; if (!r) return;
+    if (r.type === 'bind') { if (performance.now() - capEnd > 450) startCapture(r.dev, r.act); return; }
+    if (r.type === 'action') { r.run(); return; }
+    stepRow(1);
+  };
+  const switchTab = (d) => { if (capture) return; const i = TABS.findIndex((t) => t[0] === tab); tab = TABS[(i + d + TABS.length) % TABS.length][0]; row = 0; sfx('page'); paintSettings(); };
+
+  /* ───── Logros (vista previa) ───── */
+  const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+  // explorable con mando / flechas: rejilla de 4 columnas + la Torre Central abajo
+  let achSel = 0;
+  const ACH_DESC = (i) => i === 12 ? 'La Torre Central · derrota a los trece amos y libera a Elena de la maldición.' : `Torre ${ROMAN[i]} · derrota a su amo y entrega su carne a Elena. Aún sin explorar.`;
+  const markAch = () => {
+    const cs = $('#tgrid').querySelectorAll('.tcard'); cs.forEach((c, i) => c.classList.toggle('sel', i === achSel));
+    const c = cs[achSel]; if (c) { const g = $('#tgrid'), a = g.getBoundingClientRect(), r = c.getBoundingClientRect(), k = stage.getBoundingClientRect().width / 1280 || 1;
+      if (r.top < a.top) g.scrollTop -= (a.top - r.top) / k + 2; else if (r.bottom > a.bottom) g.scrollTop += (r.bottom - a.bottom) / k + 2; }
+    setDesc(ACH_DESC(achSel));
+  };
+  const moveAch = (k) => {
+    let i = achSel;
+    if (k === 'left') i = i === 12 ? 11 : Math.max(0, i - 1);
+    else if (k === 'right') i = i === 12 ? 12 : Math.min(12, i + 1);
+    else if (k === 'up') i = i === 12 ? 8 : i >= 4 ? i - 4 : i;
+    else if (k === 'down') i = i >= 8 ? 12 : i + 4;
+    if (i !== achSel) { achSel = i; sfx('move'); markAch(); }
+  };
+  // muestra el aviso real que sale dentro del juego (ventana encima de todo)
+  const testAch = () => {
+    sfx('ok');
+    const fin = achSel === 12, t = fin ? 'La Torre Central' : 'Torre ' + ROMAN[achSel];
+    const d = fin ? 'Has liberado a Elena de la maldición.' : 'Has derrotado al amo de la torre.';
+    if (host) post('achTest', { title: t, description: d, mark: fin ? '✦' : ROMAN[achSel] }); else toast('Logro: ' + t);
+  };
+  $('#achTest').addEventListener('click', (e) => { e.stopPropagation(); testAch(); });
+  const paintAch = () => {
+    const g = $('#tgrid'); g.innerHTML = '';
+    ROMAN.forEach((r, i) => g.insertAdjacentHTML('beforeend', `<div class="tcard" style="animation-delay:${i * 30}ms"><div class="ico"><span>${r}</span></div><div><b>TORRE ${r}</b><i>Sin explorar</i></div></div>`));
+    g.insertAdjacentHTML('beforeend', `<div class="tcard final" style="animation-delay:380ms"><div class="ico"><span>✦</span></div><div><b>LA TORRE CENTRAL</b><i>Libera a Elena</i></div></div>`);
+    g.querySelectorAll('.tcard').forEach((c, i) => c.addEventListener('mouseenter', () => { if (achSel !== i) { achSel = i; sfx('move'); markAch(); } }));
+    achSel = 0; markAch();
+  };
+
+  /* ───── Aplicar ajustes visibles ───── */
+  const apply = (k) => {
+    if (!k || k === 'ui') { trAll(); lastDesc = null; }
+    if (!k || k === 'theme') document.documentElement.dataset.theme = cfg.theme === 'alba' ? 'alba' : '';
+    if (!k || k === 'anim') document.body.classList.toggle('anim', cfg.anim === 'on');
+    if (!k || k === 'music') { $('#bMusic').classList.toggle('off', cfg.music !== 'on'); syncMusic(); }
+    if (k === 'mvol') { if (+cfg.mvol > 0 && cfg.music !== 'on') { cfg.music = 'on'; $('#bMusic').classList.remove('off'); } if (!music.paused && !mFade) music.volume = musicVol(); syncMusic(); }
+  };
+  const paintVersion = () => { $('#verTxt').textContent = (cfg.voice === 'en' ? 'INGLÉS' : 'JAPONÉS') + ' · ' + ({ es: 'ESP', en: 'ENG', fr: 'FRA' }[cfg.text] || 'ESP'); };
+  const fmt = (s) => [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map((n) => String(n).padStart(2, '0')).join(':');
+  $('#playtime').textContent = fmt(cfg.playtime | 0);
+
+  /* ───── Lanzar juego ───── */
+  const launch = (ver) => {
+    screen = 'launch';
+    const L = $('#launch'); L.classList.remove('show'); void L.offsetWidth; L.classList.add('show');
+    setTimeout(() => sfx('gauge'), 350);
+    $('#launchT').textContent = ver === 'jp' ? 'VOCES EN JAPONÉS' : 'VOCES EN INGLÉS';
+    const steps = ['Preparando Dolphin…', 'Aplicando ajustes…', 'Cargando texturas HD…', 'Abriendo el juego…'];
+    steps.forEach((s, i) => setTimeout(() => { if (screen === 'launch') $('#launchS').textContent = s; }, 150 + i * 700));
+    gameOn = true; fadeMusic(0, 900, () => music.pause());
+    if (api && api.launch) {
+      const set = iconSet();
+      makeTextures(set).catch((e) => { console.warn('iconos', e); return null; })
+        .then((tex) => setTimeout(() => post('play', { voice: ver, config: cfg, iconSet: set, tex }), 600));
+      launchGuard = setTimeout(() => { if (screen === 'launch') endLaunch(); }, 25000); return; }
+    setTimeout(() => { L.classList.remove('show'); screen = 'menu'; gameOn = false; syncMusic(); toast('Maqueta: aquí se abriría el juego'); toggleSub(false); sel = 0; paint(); }, 3600);
+  };
+
+  let launchGuard = null;
+  const endLaunch = () => { clearTimeout(launchGuard); gameOn = false; setTimeout(syncMusic, 400); $('#launch').classList.remove('show'); screen = 'menu'; if (open) toggleSub(false); sel = 0; paint(); };
+  /* ───── Mensajes del launcher (Electron) ───── */
+  if (host) host.addEventListener('message', (ev) => {
+    let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+    if (m.type === 'fullscreen') document.body.classList.toggle('fs', !!m.data);
+    if (m.type === 'state') {
+      hostState = m.data || hostState;
+      document.body.classList.toggle('fs', !!(m.data && m.data.fullscreen));
+      const c = (m.data && m.data.config) || {};
+      if (Object.keys(c).length) { Object.assign(cfg, c); apply(); paintVersion(); }
+      $('#playtime').textContent = fmt(cfg.playtime | 0);
+      if (!hostState.dolphinOk) toast('No encuentro Dolphin (Dolphin-x64\\Dolphin.exe)');
+    }
+    if (m.type === 'gameStarted') { $('#launchS').textContent = 'Juego iniciado'; clearTimeout(launchGuard); launchGuard = setTimeout(() => { if (screen === 'launch') { $('#launch').classList.remove('show'); screen = 'menu'; if (open) toggleSub(false); sel = 0; paint(); } }, 12000); }
+    if (m.type === 'gameClosed') { cfg.playtime = (m.data && m.data.playtime) || cfg.playtime; $('#playtime').textContent = fmt(cfg.playtime | 0); endLaunch(); }
+    if (m.type === 'error') { endLaunch(); sfx('boo'); toast(String(m.data || 'Error')); }
+    if (m.type === 'cfgPatch' && m.data) Object.assign(cfg, m.data);
+  });
+  let lastDev = '';
+  const device = (d) => {
+    if (d !== inputDev) {
+      inputDev = d; document.body.classList.toggle('kbmode', d === 'kb'); noteTxt();
+    }
+    if (d === 'pad') document.body.classList.add('nocur');
+    if (d !== lastDev) { lastDev = d; post('device', { value: d }); }
+  };
+  // el ratón reaparece en cuanto se mueve
+  let cLast = null;
+  addEventListener('mousemove', (e) => {
+    if (cLast && document.body.classList.contains('nocur') && Math.abs(e.screenX - cLast[0]) + Math.abs(e.screenY - cLast[1]) > 3) document.body.classList.remove('nocur');
+    cLast = [e.screenX, e.screenY];
+  });
+  addEventListener('mousedown', () => document.body.classList.remove('nocur'), true);
+  addEventListener('keydown', () => device('kb'), true);
+  addEventListener('mousedown', () => device('kb'), true);
+  addEventListener('wheel', () => device('kb'), { capture: true, passive: true });
+  let mAcc = 0, mLast = null;
+  addEventListener('mousemove', (e) => { if (mLast) mAcc += Math.abs(e.screenX - mLast[0]) + Math.abs(e.screenY - mLast[1]); mLast = [e.screenX, e.screenY]; if (mAcc > 60) { mAcc = 0; device('kb'); } });
+
+  /* ───── Diálogo y aviso ───── */
+  let dlgSel = 1;
+  const ask = () => { screen = 'dlg'; dlgSel = 0; $('#dim').classList.add('show'); $('#dlg').classList.add('show'); markDlg(); };
+  const closeDlg = () => { $('#dim').classList.remove('show'); $('#dlg').classList.remove('show'); screen = 'menu'; sfx('back'); };
+  const markDlg = () => { $('#dlgNo').classList.toggle('focus', dlgSel === 0); $('#dlgYes').classList.toggle('focus', dlgSel === 1); };
+  const quit = () => { if (api && api.quit) api.quit(); else { closeDlg(); toast('Maqueta: aquí se cerraría el launcher'); } };
+  $('#dlgNo').onclick = closeDlg; $('#dlgYes').onclick = quit; $('#dim').onclick = closeDlg;
+  let tt; const toast = (t) => { const e = $('#toast'); e.textContent = t; e.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => e.classList.remove('show'), 2400); };
+
+  /* ───── Botones de la barra ───── */
+  $('#bClose').onclick = () => ask();
+  $('#bMin').onclick = () => api && api.minimize && api.minimize();
+  $('#bTheme').onclick = () => { cfg.theme = cfg.theme === 'alba' ? 'noche' : 'alba'; apply('theme'); save(); sfx('tick'); toast(cfg.theme === 'alba' ? 'Tema: Alba' : 'Tema: Noche'); };
+  $('#bMusic').onclick = () => { cfg.music = cfg.music === 'on' ? 'off' : 'on'; apply('music'); save(); sfx('tick'); };
+  const fullscreen = () => { if (api && api.fullscreen) api.fullscreen(); else if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); };
+  $('#bFull').onclick = fullscreen;
+
+  /* ───── Entrada: teclado y mando ───── */
+  const input = (k) => {
+    if (introOn) { endIntro(); return; }
+    if (screen === 'launch') return;
+    if (screen === 'dlg') {
+      if (k === 'left' || k === 'right') { dlgSel ^= 1; sfx('move'); markDlg(); }
+      else if (k === 'ok') { dlgSel ? quit() : closeDlg(); } else if (k === 'back') closeDlg();
+      return;
+    }
+    if (screen === 'menu' && zone === 'tools') {
+      if (k === 'left' || k === 'right') { toolSel = (toolSel + (k === 'left' ? -1 : 1) + TOOLS.length) % TOOLS.length; sfx('move'); paintTools(); }
+      else if (k === 'up' || k === 'back') { sfx('move'); setZone('menu'); placeCursor(true); }
+      else if (k === 'ok') $(TOOLS[toolSel]).click();
+      return;
+    }
+    if (screen === 'menu') {
+      if (k === 'up') move(-1); else if (k === 'down') move(1);
+      else if (k === 'ok') activate();
+      else if (k === 'back' || (k === 'left' && open)) { if (!backMenu()) ask(); }
+      else if (k === 'x') { sfx('ok'); go('settings'); } else if (k === 'y') { sfx('ok'); go('ach'); }
+      return;
+    }
+    if (capture) return;
+    if (k === 'back') { home(); return; }
+    if (screen === 'settings') {
+      const n = tabRows().length;
+      if (k === 'up') { row = (row - 1 + n) % n; sfx('move'); markRow(); }
+      else if (k === 'down') { row = (row + 1) % n; sfx('move'); markRow(); }
+      else if (k === 'left') stepRow(-1); else if (k === 'right') stepRow(1); else if (k === 'ok') okRow();
+      else if (k === 'lb') switchTab(-1); else if (k === 'rb') switchTab(1);
+    }
+    if (screen === 'ach') { if (k === 'y') home(); else if (['up', 'down', 'left', 'right'].includes(k)) moveAch(k); else if (k === 'ok' || k === 'x') testAch(); }
+    if (screen === 'settings' && k === 'x') home();
+  };
+  const KEYS = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', Enter: 'ok', ' ': 'ok', Escape: 'back', Backspace: 'back',
+    q: 'lb', Q: 'lb', e: 'rb', E: 'rb', PageUp: 'lb', PageDown: 'rb', x: 'x', X: 'x', y: 'y', Y: 'y' };
+  addEventListener('keydown', (e) => {
+    if (e.key === 'F11') { e.preventDefault(); fullscreen(); return; }
+    const k = KEYS[e.key]; if (introOn && !e.repeat) { e.preventDefault(); endIntro(); return; }
+    if (k) { e.preventDefault(); input(k); }
+  });
+  // Gamepad API (XInput a través de Chromium)
+  const held = {}; let repeatAt = {}, padPrev = []; const padRest = {};
+  const poll = () => {
+    const pads = navigator.getGamepads ? [...navigator.getGamepads()].filter(Boolean) : [];
+    const p = pads[0];
+    if (p) {
+      const ax = p.axes[0] || 0, ay = p.axes[1] || 0, b = (i) => p.buttons[i] && p.buttons[i].pressed;
+      const st = { up: b(12) || ay < -.55, down: b(13) || ay > .55, left: b(14) || ax < -.55, right: b(15) || ax > .55,
+        ok: b(0), back: b(1), x: b(2), y: b(3), lb: b(4), rb: b(5) };
+      // Mandos genéricos (DirectInput, p. ej. Shanwan, sobre todo en Linux): no traen el mapeo "standard",
+      // mezclan el orden de los botones y mandan la cruceta como ejes. Se aceptan varios formatos a la vez.
+      if (p.mapping !== 'standard') {
+        st.ok = st.ok || b(2); st.lb = st.lb || b(6); st.rb = st.rb || b(7);
+        const rest = padRest[p.index] || (padRest[p.index] = p.axes.map((v) => v));
+        const axOk = (i) => i < p.axes.length && Math.abs(rest[i] || 0) < .2;      // ejes que en reposo están en 0 (no gatillos)
+        for (const [ix, iy] of [[4, 5], [6, 7]]) {
+          if (axOk(ix)) { const v = p.axes[ix]; if (v < -.55) st.left = true; if (v > .55) st.right = true; }
+          if (axOk(iy)) { const v = p.axes[iy]; if (v < -.55) st.up = true; if (v > .55) st.down = true; }
+        }
+        if (p.axes.length > 9) {   // cruceta como "hat" en el eje 9: -1 arriba ... 1 arriba-izquierda, ~1.29 suelto
+          const h = p.axes[9];
+          if (h >= -1.05 && h <= 1.05) {
+            const d = Math.round((h + 1) / (2 / 7));   // 0 N, 1 NE, 2 E, 3 SE, 4 S, 5 SO, 6 O, 7 NO
+            if (d === 7 || d <= 1) st.up = true; if (d >= 1 && d <= 3) st.right = true;
+            if (d >= 3 && d <= 5) st.down = true; if (d >= 5 && d <= 7) st.left = true;
+          }
+        }
+      }
+      const raw = PAD_IDX.map((_, j) => !!b(j));
+      if (raw.some(Boolean) || Math.abs(ax) > .5 || Math.abs(ay) > .5) device('pad');
+      const capWas = !!capture;
+      if (capture && capture.dev === 'pad') { const j = raw.findIndex((v, n) => v && !padPrev[n]); if (j >= 0) finishCapture(PAD_IDX[j]); }
+      padPrev = raw;
+      if (capWas || capture || performance.now() - capEnd < 250) { for (const k in st) held[k] = st[k]; requestAnimationFrame(poll); return; }
+      const now = performance.now();
+      for (const k in st) {
+        if (st[k] && !held[k]) { held[k] = true; repeatAt[k] = now + 380; input(k); }
+        else if (st[k] && ['up', 'down', 'left', 'right'].includes(k) && now > repeatAt[k]) { repeatAt[k] = now + 110; input(k); }
+        else if (!st[k]) held[k] = false;
+      }
+    }
+    requestAnimationFrame(poll);
+  };
+  requestAnimationFrame(poll);
+
+  /* ───── Partículas: pétalos y brasas ───── */
+  const cv = $('#fx'), cx = cv.getContext('2d');
+  const P = [];
+  const spawn = (init) => {
+    const ember = Math.random() < .28;
+    P.push({ ember, x: ember ? Math.random() * 1280 : 300 + Math.random() * 1100, y: init ? Math.random() * 720 : (ember ? 740 : -20),
+      vx: ember ? (Math.random() - .5) * .2 : -(.35 + Math.random() * .6), vy: ember ? -(.25 + Math.random() * .45) : .35 + Math.random() * .5,
+      r: ember ? 1 + Math.random() * 1.6 : 3 + Math.random() * 4, a: Math.random() * 6.28, va: (Math.random() - .5) * .05,
+      ph: Math.random() * 6.28, life: 1 });
+  };
+  for (let i = 0; i < 46; i++) spawn(true);
+  const css = getComputedStyle(document.documentElement);
+  const frame = () => {
+    cx.clearRect(0, 0, 1280, 720);
+    if (cfg.particles === 'on') {
+      const pc = css.getPropertyValue('--petal').trim(), ec = css.getPropertyValue('--ember').trim();
+      for (let i = P.length - 1; i >= 0; i--) {
+        const p = P[i]; p.ph += .02; p.a += p.va;
+        p.x += p.vx + Math.sin(p.ph) * .35; p.y += p.vy;
+        if (p.y > 740 || p.y < -30 || p.x < -30) { P.splice(i, 1); spawn(false); continue; }
+        cx.save(); cx.translate(p.x, p.y);
+        if (p.ember) {
+          const fl = .45 + Math.sin(p.ph * 3) * .25;
+          cx.fillStyle = `rgba(${ec},${fl})`; cx.shadowColor = `rgba(${ec},.9)`; cx.shadowBlur = 8;
+          cx.beginPath(); cx.arc(0, 0, p.r, 0, 6.28); cx.fill();
+        } else {
+          cx.rotate(p.a); cx.scale(1, .45 + Math.abs(Math.sin(p.ph)) * .55);
+          cx.fillStyle = `rgba(${pc},.62)`;
+          cx.beginPath(); cx.ellipse(0, 0, p.r, p.r * .55, 0, 0, 6.28); cx.fill();
+        }
+        cx.restore();
+      }
+    }
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+
+  /* ───── Intro ───── */
+  const intro = $('#intro'); let introOn = false, introT;
+  const showMenu = () => {
+    menuEl.classList.add('entering');
+    setTimeout(() => { menuEl.classList.remove('enter', 'entering'); paint(); }, 900);
+    paint(false); cursor.classList.add('hidden'); setTimeout(() => placeCursor(true), 700);
+  };
+  const endIntro = () => { if (!introOn) return; introOn = false; clearTimeout(introT); intro.classList.add('gone'); showMenu(); };
+
+  buildMenu(); apply(); paintVersion();
+  if (cfg.intro === 'on' && !/nointro/.test(location.hash)) { introOn = true; introT = setTimeout(endIntro, 5200); }
+  else { intro.classList.add('gone'); intro.style.transition = 'none'; showMenu(); }
+  if (/alba/.test(location.hash)) { cfg.theme = 'alba'; apply('theme'); }
+  intro.addEventListener('click', endIntro);
+  window.__pt = { go, home, input, cfg, apply, makeTextures, binds };
+  post('init');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+PANDORA'S TOWER - Dionixu's Launcher
+====================================
+
+AVISO LEGAL - LEE ANTES DE INSTALAR
+  * Este instalador NO incluye el juego. Solo contiene el launcher, las mejoras y las herramientas.
+  * Necesitas DOS copias ORIGINALES de Pandora's Tower para Wii, extraidas por ti de tus propios discos:
+      - Version americana (NTSC-U, ID SX3EXJ)              -> juego y textos (ingles, espanol, frances)
+      - Version japonesa Pandora no To (NTSC-J, ID SX3J01) -> voces japonesas
+  * El instalador comprueba ambas copias (ID y huellas MD5) y SOLO funcionara con tu copia oficial.
+    Una copia modificada, incompleta o de otra region sera rechazada.
+  * Las voces japonesas se reconstruyen en tu equipo a partir de TUS discos: el instalador no trae audio del juego.
+  * No se acepta ni se fomenta la pirateria. Necesitas tu copia oficial. No descargues el juego de internet.
+  * Proyecto de aficionados sin fines de lucro, sin relacion con Nintendo, Ganbarion ni XSEED Games.
+
+INSTALACION EN WINDOWS (10 u 11, 64 bits)
+  Que necesitas:
+    - Unos 10 GB libres en el disco donde instales (unos 6 GB al terminar).
+    - Tus dos copias del juego en formato .rvz, .iso, .wbfs, .wia o .gcz (version americana y japonesa).
+  Pasos:
+    1. Copia esta carpeta completa a tu PC (no ejecutes el instalador desde un .zip).
+    2. Abre "Instalar Pandora's Tower.exe".
+       Si Windows SmartScreen avisa: "Mas informacion" -> "Ejecutar de todas formas".
+    3. Elige el idioma (English / Espanol / Francais) y acepta el aviso legal.
+    4. Elige tu copia americana (SX3EXJ) y tu copia japonesa (SX3J01). Se comprueban en el momento.
+    5. Elige la carpeta de instalacion (por defecto: Documentos\Pandora's Tower) y los accesos directos.
+    6. Pulsa INSTALAR. Tarda de 5 a 15 minutos. Al terminar, el launcher se abre solo en una ventana.
+  Que se instala:
+    launcher\     launcher (ajustes, controles, logros, idioma, musica)
+    Dolphin-x64\  Dolphin portable con texturas HD y botones (tus partidas se guardan en Dolphin-x64\User)
+    juego\        US_INGLES (voces en ingles) y US_VOZ_JP (voces japonesas; los archivos comunes no ocupan doble)
+  Durante el juego: L3 + R3 (mando) o F1 (teclado) abre el menu de pausa (volumen y volver al launcher).
+  Desinstalar: borra la carpeta de instalacion y los accesos directos.
+
+------------------------------------------------------------------------------
+
+LEGAL NOTICE - READ BEFORE INSTALLING
+  * This installer does NOT include the game. It only contains the launcher, the enhancements and the tools.
+  * You need TWO ORIGINAL copies of Pandora's Tower for Wii, dumped by you from your own discs:
+      - North American version (NTSC-U, ID SX3EXJ)            -> game and text (English, Spanish, French)
+      - Japanese version Pandora no To (NTSC-J, ID SX3J01)    -> Japanese voices
+  * The installer checks both copies (ID and MD5 fingerprints) and will ONLY work with your official copy.
+    A modified, incomplete or wrong-region copy will be rejected.
+  * The Japanese voices are rebuilt on your computer from YOUR discs: the installer carries no game audio.
+  * Piracy is not accepted or encouraged. You need your official copy. Do not download the game from the internet.
+  * Non-profit fan project, not affiliated with Nintendo, Ganbarion or XSEED Games.
+
+INSTALLING ON WINDOWS (10 or 11, 64-bit)
+  You need:
+    - About 10 GB free on the target drive (about 6 GB once finished).
+    - Your two game copies as .rvz, .iso, .wbfs, .wia or .gcz (North American and Japanese versions).
+  Steps:
+    1. Copy this whole folder to your PC (do not run the installer from inside a .zip).
+    2. Open "Instalar Pandora's Tower.exe".
+       If Windows SmartScreen warns you: "More info" -> "Run anyway".
+    3. Pick the language (English / Espanol / Francais) and accept the legal notice.
+    4. Pick your North American copy (SX3EXJ) and your Japanese copy (SX3J01). They are checked right away.
+    5. Pick the install folder (default: Documents\Pandora's Tower) and the shortcuts.
+    6. Press INSTALL. It takes 5 to 15 minutes. When it finishes, the launcher opens in a window.
+  In game: L3 + R3 (gamepad) or F1 (keyboard) opens the pause menu (volume and back to the launcher).
+  Uninstall: delete the install folder and the shortcuts.
+
+------------------------------------------------------------------------------
+
+AVERTISSEMENT LEGAL - A LIRE AVANT L'INSTALLATION
+  * Cet installateur ne contient PAS le jeu. Il contient uniquement le launcher, les ameliorations et les outils.
+  * Il te faut DEUX copies ORIGINALES de Pandora's Tower sur Wii, extraites par toi de tes propres disques :
+      - Version americaine (NTSC-U, ID SX3EXJ)                -> jeu et textes (anglais, espagnol, francais)
+      - Version japonaise Pandora no To (NTSC-J, ID SX3J01)   -> voix japonaises
+  * L'installateur verifie les deux copies (ID et empreintes MD5) et fonctionnera UNIQUEMENT avec ta copie officielle.
+    Une copie modifiee, incomplete ou d'une autre region sera refusee.
+  * Les voix japonaises sont reconstruites sur ton ordinateur a partir de TES disques : l'installateur ne contient aucun son du jeu.
+  * Le piratage n'est ni accepte ni encourage. Il te faut ta copie officielle. Ne telecharge pas le jeu sur internet.
+  * Projet de fans a but non lucratif, sans lien avec Nintendo, Ganbarion ou XSEED Games.
+
+INSTALLATION SOUS WINDOWS (10 ou 11, 64 bits)
+  Il te faut :
+    - Environ 10 Go libres sur le disque d'installation (environ 6 Go a la fin).
+    - Tes deux copies du jeu en .rvz, .iso, .wbfs, .wia ou .gcz (versions americaine et japonaise).
+  Etapes :
+    1. Copie ce dossier complet sur ton PC (ne lance pas l'installateur depuis un .zip).
+    2. Ouvre "Instalar Pandora's Tower.exe".
+       Si Windows SmartScreen t'avertit : "Informations complementaires" -> "Executer quand meme".
+    3. Choisis la langue (English / Espanol / Francais) et accepte l'avertissement legal.
+    4. Choisis ta copie americaine (SX3EXJ) et ta copie japonaise (SX3J01). Elles sont verifiees aussitot.
+    5. Choisis le dossier d'installation (par defaut : Documents\Pandora's Tower) et les raccourcis.
+    6. Appuie sur INSTALLER. Cela prend 5 a 15 minutes. A la fin, le launcher s'ouvre dans une fenetre.
+  En jeu : L3 + R3 (manette) ou F1 (clavier) ouvre le menu pause (volume et retour au launcher).
+  Desinstaller : supprime le dossier d'installation et les raccourcis.
+
+------------------------------------------------------------------------------
+
+CREDITOS / CREDITS / CREDITS
+  Proyecto / Project / Projet : Dionixu's Launcher
+  Desarrollado con la ayuda de / Built with the help of / Developpe avec l'aide de : Claude (Anthropic)
+  Texturas HD / HD textures   : paquete HD SX3EXJ de sus autores / SX3EXJ HD pack by its authors
+  Botones Xbox y teclado / Xbox and keyboard prompts : creados para Dionixu's Launcher
+  Dolphin Emulator (GPLv2) - dolphin-emu.org
+  Electron (MIT) - electronjs.org  ·  AppImage runtime (MIT) - appimage.org
+  Tipografias / Fonts / Polices : Cinzel, Cormorant Garamond, Inter (SIL Open Font License)
+  Musica del launcher / Launcher music / Musique : "Catenae Fortunae (Dies Irae)" - Pandora's Tower (banda sonora original / original soundtrack)
+  Sonidos del menu / Menu sounds / Sons du menu : efectos de Pandora's Tower / Pandora's Tower sound effects
+  Pandora's Tower (c) Nintendo / Ganbarion
+
+  Homenaje de fans sin fines de lucro: la musica, los sonidos, el arte y las marcas pertenecen a sus duenos.
+  Non-profit fan tribute: music, sounds, artwork and trademarks belong to their respective owners.
+  Hommage de fans a but non lucratif : musique, sons, illustrations et marques appartiennent a leurs proprietaires.

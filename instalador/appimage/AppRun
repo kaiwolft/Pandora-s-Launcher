@@ -1,0 +1,4 @@
+#!/bin/sh
+# Instalador de Pandora's Tower - Dionixu's Launcher (AppImage)
+HERE="$(dirname "$(readlink -f "$0")")"
+exec "$HERE/electron" --no-sandbox "$@"

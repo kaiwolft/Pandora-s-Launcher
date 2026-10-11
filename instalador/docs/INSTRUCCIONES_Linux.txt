@@ -1,0 +1,150 @@
+PANDORA'S TOWER - Dionixu's Launcher
+====================================
+
+AVISO LEGAL - LEE ANTES DE INSTALAR
+  * Este instalador NO incluye el juego. Solo contiene el launcher, las mejoras y las herramientas.
+  * Necesitas DOS copias ORIGINALES de Pandora's Tower para Wii, extraidas por ti de tus propios discos:
+      - Version americana (NTSC-U, ID SX3EXJ)              -> juego y textos (ingles, espanol, frances)
+      - Version japonesa Pandora no To (NTSC-J, ID SX3J01) -> voces japonesas
+  * El instalador comprueba ambas copias (ID y huellas MD5) y SOLO funcionara con tu copia oficial.
+    Una copia modificada, incompleta o de otra region sera rechazada.
+  * Las voces japonesas se reconstruyen en tu equipo a partir de TUS discos: el instalador no trae audio del juego.
+  * No se acepta ni se fomenta la pirateria. Necesitas tu copia oficial. No descargues el juego de internet.
+  * Proyecto de aficionados sin fines de lucro, sin relacion con Nintendo, Ganbarion ni XSEED Games.
+
+INSTALACION EN LINUX (AppImage; Debian 12, Ubuntu 22.04, Linux Mint 21, Fedora 36 o mas nuevos; 64 bits)
+  Que necesitas:
+    - Unos 10 GB libres (unos 6 GB al terminar).
+    - Tus dos copias del juego (.rvz, .iso, .wbfs, .wia o .gcz): version americana y japonesa.
+    - Tu propio Dolphin para Linux (no se incluye). Recomendado: Flatpak (version actual de Dolphin):
+        sudo apt install flatpak
+        flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+        flatpak install flathub org.DolphinEmu.dolphin-emu
+      Tambien sirve un Dolphin compilado por ti (elige dolphin-emu y dolphin-tool en el instalador).
+      El paquete 'dolphin-emu' de apt en Debian/Ubuntu suele ser muy antiguo y no se recomienda.
+    - FUSE para abrir AppImages (casi todas las distribuciones lo traen). Si no abre:  sudo apt install libfuse2
+      (o ejecuta:  ./Instalar_Pandoras_Tower-x86_64.AppImage --appimage-extract-and-run)
+    - Opcional, para el volumen en vivo del menu de pausa: sudo apt install pulseaudio-utils   (pactl)
+  Pasos:
+    1. Copia el AppImage a tu equipo y dale permiso de ejecucion:
+         chmod +x Instalar_Pandoras_Tower-x86_64.AppImage
+       (o clic derecho -> Propiedades -> Permitir ejecutar como programa).
+    2. Abrelo con doble clic o desde una terminal:  ./Instalar_Pandoras_Tower-x86_64.AppImage
+    3. Elige el idioma y acepta el aviso legal.
+    4. Elige tu Dolphin (se detecta solo si esta instalado) y tus dos copias del juego.
+    5. Elige la carpeta de instalacion (por defecto: ~/Games/Pandora's Tower) y los accesos directos
+       (menu de aplicaciones y escritorio).
+    6. Pulsa INSTALAR. Al terminar, el launcher se abre solo en una ventana. El AppImage ya no hace falta.
+  Que funciona en Linux:
+    - Ventana del launcher en X11 y en Wayland (Chromium elige solo; Dolphin va por XWayland).
+    - Puente del mando: L3 + R3 y F1 abren el menu de pausa, foco de ventanas, ventana sin bordes y volumen en vivo.
+    - Dolphin escucha mando y teclado aunque crea que no tiene el foco (necesario en Wayland).
+    - Mando: cualquier mando compatible con SDL (Xbox, PlayStation, 8BitDo...). Teclado y raton por XInput2.
+    - Mandos genericos (DirectInput, p. ej. Shanwan): el menu del launcher los entiende aunque mezclen los botones.
+      Si en el juego los botones salen cruzados: Ajustes -> Controles -> CONTROLES AUTOMATICOS = No, y configura
+      el mando una sola vez en Dolphin (Controles -> Mando Clasico). El launcher ya no pisara esa configuracion.
+  Configuracion de Dolphin: se usa una carpeta propia (dolphin-user dentro de la instalacion);
+  tu configuracion normal de Dolphin no se toca.
+  Desinstalar: borra la carpeta de instalacion y ~/.local/share/applications/pandoras-tower.desktop.
+
+------------------------------------------------------------------------------
+
+LEGAL NOTICE - READ BEFORE INSTALLING
+  * This installer does NOT include the game. It only contains the launcher, the enhancements and the tools.
+  * You need TWO ORIGINAL copies of Pandora's Tower for Wii, dumped by you from your own discs:
+      - North American version (NTSC-U, ID SX3EXJ)            -> game and text (English, Spanish, French)
+      - Japanese version Pandora no To (NTSC-J, ID SX3J01)    -> Japanese voices
+  * The installer checks both copies (ID and MD5 fingerprints) and will ONLY work with your official copy.
+    A modified, incomplete or wrong-region copy will be rejected.
+  * The Japanese voices are rebuilt on your computer from YOUR discs: the installer carries no game audio.
+  * Piracy is not accepted or encouraged. You need your official copy. Do not download the game from the internet.
+  * Non-profit fan project, not affiliated with Nintendo, Ganbarion or XSEED Games.
+
+INSTALLING ON LINUX (AppImage; Debian 12, Ubuntu 22.04, Linux Mint 21, Fedora 36 or newer; 64-bit)
+  You need:
+    - About 10 GB free (about 6 GB once finished).
+    - Your two game copies (.rvz, .iso, .wbfs, .wia or .gcz): North American and Japanese versions.
+    - Your own Dolphin for Linux (not included). Recommended: Flatpak (current Dolphin):
+        sudo apt install flatpak
+        flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+        flatpak install flathub org.DolphinEmu.dolphin-emu
+      A Dolphin you built yourself also works (pick dolphin-emu and dolphin-tool in the installer).
+      The 'dolphin-emu' apt package on Debian/Ubuntu is usually very old and not recommended.
+    - FUSE to open AppImages (most distributions have it). If it does not open:  sudo apt install libfuse2
+      (or run:  ./Instalar_Pandoras_Tower-x86_64.AppImage --appimage-extract-and-run)
+    - Optional, for live volume in the pause menu: sudo apt install pulseaudio-utils   (pactl)
+  Steps:
+    1. Copy the AppImage to your computer and make it executable:
+         chmod +x Instalar_Pandoras_Tower-x86_64.AppImage
+       (or right click -> Properties -> Allow executing as program).
+    2. Open it with a double click or from a terminal:  ./Instalar_Pandoras_Tower-x86_64.AppImage
+    3. Pick the language and accept the legal notice.
+    4. Pick your Dolphin (auto-detected when installed) and your two game copies.
+    5. Pick the install folder (default: ~/Games/Pandora's Tower) and the shortcuts (app menu and desktop).
+    6. Press INSTALL. When it finishes, the launcher opens in a window. The AppImage is no longer needed.
+  Works on Linux: launcher window on X11 and Wayland, gamepad bridge (L3 + R3 and F1 open the pause menu, window
+  focus, borderless window, live volume), any SDL gamepad, keyboard and mouse through XInput2. Generic DirectInput
+  pads work in the launcher menu; if buttons are swapped in game, set Settings -> Controls -> AUTOMATIC CONTROLS = No
+  and configure the pad once in Dolphin (Controllers -> Classic Controller); the launcher will keep your setup.
+  Dolphin uses its own folder (dolphin-user inside the install); your normal Dolphin settings are untouched.
+  Uninstall: delete the install folder and ~/.local/share/applications/pandoras-tower.desktop.
+
+------------------------------------------------------------------------------
+
+AVERTISSEMENT LEGAL - A LIRE AVANT L'INSTALLATION
+  * Cet installateur ne contient PAS le jeu. Il contient uniquement le launcher, les ameliorations et les outils.
+  * Il te faut DEUX copies ORIGINALES de Pandora's Tower sur Wii, extraites par toi de tes propres disques :
+      - Version americaine (NTSC-U, ID SX3EXJ)                -> jeu et textes (anglais, espagnol, francais)
+      - Version japonaise Pandora no To (NTSC-J, ID SX3J01)   -> voix japonaises
+  * L'installateur verifie les deux copies (ID et empreintes MD5) et fonctionnera UNIQUEMENT avec ta copie officielle.
+    Une copie modifiee, incomplete ou d'une autre region sera refusee.
+  * Les voix japonaises sont reconstruites sur ton ordinateur a partir de TES disques : l'installateur ne contient aucun son du jeu.
+  * Le piratage n'est ni accepte ni encourage. Il te faut ta copie officielle. Ne telecharge pas le jeu sur internet.
+  * Projet de fans a but non lucratif, sans lien avec Nintendo, Ganbarion ou XSEED Games.
+
+INSTALLATION SOUS LINUX (AppImage ; Debian 12, Ubuntu 22.04, Linux Mint 21, Fedora 36 ou plus recent ; 64 bits)
+  Il te faut :
+    - Environ 10 Go libres (environ 6 Go a la fin).
+    - Tes deux copies du jeu (.rvz, .iso, .wbfs, .wia ou .gcz) : versions americaine et japonaise.
+    - Ton propre Dolphin pour Linux (non inclus). Recommande : Flatpak (version actuelle de Dolphin) :
+        sudo apt install flatpak
+        flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+        flatpak install flathub org.DolphinEmu.dolphin-emu
+      Un Dolphin compile par toi fonctionne aussi (choisis dolphin-emu et dolphin-tool dans l'installateur).
+      Le paquet apt 'dolphin-emu' de Debian/Ubuntu est souvent tres ancien et deconseille.
+    - FUSE pour ouvrir les AppImage (presque toutes les distributions l'ont). Sinon :  sudo apt install libfuse2
+      (ou lance :  ./Instalar_Pandoras_Tower-x86_64.AppImage --appimage-extract-and-run)
+    - Optionnel, pour le volume en direct du menu pause : sudo apt install pulseaudio-utils   (pactl)
+  Etapes :
+    1. Copie l'AppImage sur ton ordinateur et rends-le executable :
+         chmod +x Instalar_Pandoras_Tower-x86_64.AppImage
+       (ou clic droit -> Proprietes -> Autoriser l'execution).
+    2. Ouvre-le par double clic ou depuis un terminal :  ./Instalar_Pandoras_Tower-x86_64.AppImage
+    3. Choisis la langue et accepte l'avertissement legal.
+    4. Choisis ton Dolphin (detecte automatiquement s'il est installe) et tes deux copies du jeu.
+    5. Choisis le dossier d'installation (par defaut : ~/Games/Pandora's Tower) et les raccourcis.
+    6. Appuie sur INSTALLER. A la fin, le launcher s'ouvre dans une fenetre. L'AppImage n'est plus necessaire.
+  Fonctionne sous Linux : fenetre du launcher sous X11 et Wayland, pont manette (L3 + R3 et F1 ouvrent le menu pause,
+  focus des fenetres, fenetre sans bordure, volume en direct), toute manette SDL, clavier et souris via XInput2.
+  Manettes generiques DirectInput : reconnues dans le menu du launcher ; si les boutons sont inverses en jeu, mets
+  Reglages -> Commandes -> COMMANDES AUTOMATIQUES = Non et configure la manette une fois dans Dolphin.
+  Dolphin utilise son propre dossier (dolphin-user dans l'installation) ; ta configuration habituelle n'est pas modifiee.
+  Desinstaller : supprime le dossier d'installation et ~/.local/share/applications/pandoras-tower.desktop.
+
+------------------------------------------------------------------------------
+
+CREDITOS / CREDITS / CREDITS
+  Proyecto / Project / Projet : Dionixu's Launcher
+  Desarrollado con la ayuda de / Built with the help of / Developpe avec l'aide de : Claude (Anthropic)
+  Texturas HD / HD textures   : paquete HD SX3EXJ de sus autores / SX3EXJ HD pack by its authors
+  Botones Xbox y teclado / Xbox and keyboard prompts : creados para Dionixu's Launcher
+  Dolphin Emulator (GPLv2) - dolphin-emu.org
+  Electron (MIT) - electronjs.org  ·  AppImage runtime (MIT) - appimage.org
+  Tipografias / Fonts / Polices : Cinzel, Cormorant Garamond, Inter (SIL Open Font License)
+  Musica del launcher / Launcher music / Musique : "Catenae Fortunae (Dies Irae)" - Pandora's Tower (banda sonora original / original soundtrack)
+  Sonidos del menu / Menu sounds / Sons du menu : efectos de Pandora's Tower / Pandora's Tower sound effects
+  Pandora's Tower (c) Nintendo / Ganbarion
+
+  Homenaje de fans sin fines de lucro: la musica, los sonidos, el arte y las marcas pertenecen a sus duenos.
+  Non-profit fan tribute: music, sounds, artwork and trademarks belong to their respective owners.
+  Hommage de fans a but non lucratif : musique, sons, illustrations et marques appartiennent a leurs proprietaires.

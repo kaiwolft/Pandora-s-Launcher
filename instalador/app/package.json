@@ -1,0 +1,6 @@
+{
+  "name": "pandoras-tower-installer",
+  "productName": "Dionixu's Launcher - Instalador de Pandora's Tower",
+  "version": "1.0.0",
+  "main": "main.js"
+}

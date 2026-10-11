@@ -1,0 +1,7 @@
+{
+  "name": "pandoras-tower-launcher",
+  "productName": "Pandora's Tower",
+  "version": "0.1.0",
+  "description": "Launcher de Pandora's Tower - Dionixu's Launcher",
+  "main": "main.js"
+}

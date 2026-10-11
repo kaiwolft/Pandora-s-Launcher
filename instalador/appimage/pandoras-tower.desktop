@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Pandora's Tower (Instalador)
+Comment=Dionixu's Launcher
+Exec=AppRun
+Icon=pandoras-tower
+Categories=Game;
+Terminal=false

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Logro</title>
+<style>
+@font-face{font-family:"PT Cinzel";src:url(fonts/Cinzel.ttf) format("truetype");font-weight:400 900}
+@font-face{font-family:"PT Cormorant";src:url(fonts/CormorantGaramond.ttf) format("truetype");font-weight:300 700}
+@font-face{font-family:"PT Cormorant";src:url(fonts/CormorantGaramond-Italic.ttf) format("truetype");font-weight:300 700;font-style:italic}
+:root{--ink:#efe7d7;--mute:#9a9182;--amber:#e9a14a;--bar1:#6e250d;--bar2:#c25a1c;
+  --display:"PT Cinzel","Cinzel",Georgia,serif;--body:"PT Cormorant","Cormorant Garamond",Georgia,serif}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:transparent;user-select:none;font-family:var(--body);cursor:none}
+#card{position:absolute;left:50%;top:20px;width:540px;height:104px;display:flex;align-items:center;gap:20px;padding:0 26px 0 22px;
+  transform:translate(-50%,-160%);opacity:0;
+  background:linear-gradient(90deg,rgba(9,12,17,.96),rgba(18,22,30,.94) 60%,rgba(40,18,8,.94));
+  border:1px solid rgba(239,231,215,.34);box-shadow:0 0 34px 4px rgba(233,161,74,.28),0 18px 40px rgba(0,0,0,.6)}
+#card::before,#card::after{content:"";position:absolute;width:22px;height:22px;border:2px solid var(--amber);pointer-events:none}
+#card::before{left:-6px;top:-6px;border-right:0;border-bottom:0}
+#card::after{right:-6px;bottom:-6px;border-left:0;border-top:0}
+#card.in{animation:drop .8s cubic-bezier(.2,.9,.25,1.12) forwards}
+#card.out{animation:rise .6s cubic-bezier(.5,0,.8,.4) forwards}
+@keyframes drop{from{transform:translate(-50%,-160%);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+@keyframes rise{from{transform:translate(-50%,0);opacity:1}to{transform:translate(-50%,-160%);opacity:0}}
+.sweep{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.sweep i{position:absolute;inset:0;background:linear-gradient(100deg,transparent 38%,rgba(255,214,150,.35) 50%,transparent 62%);background-size:260% 100%;background-position:130% 0}
+#card.in .sweep i{animation:sweep 1.5s .6s ease-in-out forwards}
+@keyframes sweep{to{background-position:-130% 0}}
+/* emblema: rombo con el blasón y cadenas */
+.badge{position:relative;flex:none;width:70px;height:70px;display:flex;align-items:center;justify-content:center}
+.badge .dia{position:absolute;inset:9px;transform:rotate(45deg);border:2px solid var(--amber);background:radial-gradient(circle,rgba(194,90,28,.55),rgba(30,12,4,.9) 70%);
+  box-shadow:0 0 16px rgba(233,161,74,.7)}
+.badge img{position:relative;width:44px;filter:drop-shadow(0 0 6px rgba(255,190,110,.8))}
+.badge .num{position:relative;font-family:var(--display);font-size:20px;font-weight:700;color:#fff2dc;text-shadow:0 0 8px rgba(255,170,80,.9)}
+.ring{position:absolute;inset:2px;transform:rotate(45deg);border:2px solid rgba(255,220,160,.9);opacity:0}
+#card.in .ring{animation:ring 1.2s .55s ease-out forwards}
+@keyframes ring{0%{transform:rotate(45deg) scale(.7);opacity:.95}100%{transform:rotate(45deg) scale(1.6);opacity:0}}
+.txt{flex:1;min-width:0}
+.k{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:3.5px;color:var(--amber)}
+.t{font-family:var(--display);font-size:20px;font-weight:600;letter-spacing:1.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:3px 0 1px}
+.d{font-size:17px;font-style:italic;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+</style>
+</head>
+<body>
+<div id="card">
+  <div class="sweep"><i></i></div>
+  <div class="badge"><div class="dia"></div><div class="ring"></div><img id="img" src="assets/icon.png" alt=""><span class="num" id="num"></span></div>
+  <div class="txt"><div class="k" id="k">LOGRO DESBLOQUEADO</div><div class="t" id="t"></div><div class="d" id="d"></div></div>
+</div>
+<script>
+(() => {
+  const host = window.ptHost;
+  const $ = (id) => document.getElementById(id);
+  const L = { es: 'LOGRO DESBLOQUEADO', en: 'ACHIEVEMENT UNLOCKED', fr: 'SUCCÈS DÉBLOQUÉ' };
+  const chime = new Audio('assets/sfx/tower.ogg');
+  const card = $('card');
+  if (host) host.addEventListener('message', (ev) => {
+    let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+    if (m.type !== 'show') return;
+    const a = m.data || {};
+    $('k').textContent = L[a.lang] || L.es;
+    $('t').textContent = a.title || ''; $('d').textContent = a.description || '';
+    // torres: número romano dentro del rombo · otros logros: el blasón
+    $('num').textContent = a.mark || ''; $('img').style.display = a.mark ? 'none' : '';
+    card.className = ''; void card.offsetWidth; card.className = 'in';
+    if (a.sound !== false) { try { chime.currentTime = 0; chime.volume = .6; chime.play().catch(() => {}); } catch (e) {} }
+    clearTimeout(card._t);
+    card._t = setTimeout(() => { card.className = 'out'; setTimeout(() => host.postMessage(JSON.stringify({ cmd: 'toastDone' })), 650); }, 5200);
+  });
+})();
+</script>
+</body>
+</html>
