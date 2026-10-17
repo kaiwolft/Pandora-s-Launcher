@@ -136,7 +136,7 @@ $spec = [ordered]@{
     [ordered]@{ src = (Join-Path $L 'ui'); dst = 'payload/launcher/ui' },
     [ordered]@{ src = (Join-Path $L 'data\botones'); dst = 'payload/launcher/data/botones' },
     [ordered]@{ src = $tex; dst = 'payload/textures/SX3EXJ'; exclude = @('Botones') },
-    [ordered]@{ src = (Join-Path $proj 'steam'); dst = 'payload/steam'; exclude = @('AGREGAR_A_STEAM.bat', 'AGREGAR_A_STEAM.ps1'); exec = @('agregar_a_steam.sh', 'agregar_a_steam.py') }
+    [ordered]@{ src = (Join-Path $proj 'steam'); dst = 'payload/steam'; exec = @('agregar_a_steam.sh', 'agregar_a_steam.py') }
   )
   files   = @(
     [ordered]@{ src = (Join-Path $INS 'appimage\AppRun'); dst = 'AppRun'; mode = 493 },
