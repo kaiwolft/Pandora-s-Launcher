@@ -96,6 +96,8 @@ Write-Host '   Dolphin portable (sin la carpeta User: ni partidas ni configuraci
 RC $dol (Join-Path $pay 'dolphin') @((Join-Path $dol 'User')) @('portable.txt')
 Write-Host '   texturas HD (sin los botones: los pone el launcher)...'
 RC $tex (Join-Path $pay 'textures\SX3EXJ') @((Join-Path $tex 'Botones')) @('desktop.ini', 'Thumbs.db')
+$steamDir = Join-Path $proj 'steam'
+if (Test-Path $steamDir) { RC $steamDir (Join-Path $pay 'steam') }   # AGREGAR_A_STEAM + arte
 CopyF (Join-Path $INS 'docs\INSTRUCCIONES_Windows.txt') (Join-Path $wDir 'INSTRUCCIONES.txt')
 
 # ---------------------------------------------------------------- Linux (AppImage)
@@ -133,7 +135,8 @@ $spec = [ordered]@{
     [ordered]@{ src = $laLinux; dst = 'payload/launcher/app'; exec = @('pt_bridge') },
     [ordered]@{ src = (Join-Path $L 'ui'); dst = 'payload/launcher/ui' },
     [ordered]@{ src = (Join-Path $L 'data\botones'); dst = 'payload/launcher/data/botones' },
-    [ordered]@{ src = $tex; dst = 'payload/textures/SX3EXJ'; exclude = @('Botones') }
+    [ordered]@{ src = $tex; dst = 'payload/textures/SX3EXJ'; exclude = @('Botones') },
+    [ordered]@{ src = (Join-Path $proj 'steam'); dst = 'payload/steam'; exclude = @('AGREGAR_A_STEAM.bat', 'AGREGAR_A_STEAM.ps1'); exec = @('agregar_a_steam.sh', 'agregar_a_steam.py') }
   )
   files   = @(
     [ordered]@{ src = (Join-Path $INS 'appimage\AppRun'); dst = 'AppRun'; mode = 493 },

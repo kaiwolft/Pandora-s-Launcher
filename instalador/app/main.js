@@ -212,6 +212,17 @@ async function install(o) {
       try { fs.chmodSync(path.join(L_DIR, f), 0o755); } catch (e) {}
   }
   // 5. accesos directos
+  // Steam: AGREGAR_A_STEAM.bat (Windows) o agregar_a_steam.sh (Linux / Steam Deck) + arte
+  if (exists(payload('steam'))) {
+    try {
+      copyDir(path.join(payload('steam'), 'arte'), path.join(dir, 'steam'));
+      const sf = IS_WIN ? ['AGREGAR_A_STEAM.bat', 'AGREGAR_A_STEAM.ps1'] : ['agregar_a_steam.sh', 'agregar_a_steam.py'];
+      for (const f of sf.concat('LEEME - README.txt')) if (exists(path.join(payload('steam'), f))) {
+        fs.copyFileSync(path.join(payload('steam'), f), path.join(dir, f));
+        if (!IS_WIN && /\.(sh|py)$/.test(f)) try { fs.chmodSync(path.join(dir, f), 0o755); } catch (e) {}
+      }
+    } catch (e) { log('steam: ' + e.message); }
+  }
   step('shortcuts', 97);
   const exe = path.join(L_DIR, exeName);
   if (IS_WIN) {
